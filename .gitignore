@@ -36,4 +36,4 @@ lerna-debug.log*
 .prettierrc
 package-lock.json
 .gitignore
-.gitignore
+.env
