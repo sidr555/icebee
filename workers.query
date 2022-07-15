@@ -1,0 +1,48 @@
+query WorkerQuery {
+  workers (farm: 2212723) {
+    id
+    name
+    active
+    vpn
+    units_count
+    system_type
+    ip_addresses
+    needs_upgrade
+    stats {
+      online
+      gpus_online
+      gpus_offline
+      gpus_overheated
+      invalid
+      overloaded
+      overheated
+      problems
+    }
+    hardware_info {
+      motherboard {
+        manufacturer
+        model
+      }
+      disc {
+        model
+      }
+    }
+    gpu_stats {
+      bus_number
+      temp
+      power
+      hash
+      fan
+    }
+    gpu_info {
+      bus_number
+      model
+      brand
+      details {
+        mem_gb
+        mem_type
+      }
+    }
+  }  
+
+}
