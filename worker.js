@@ -18,56 +18,6 @@ const users = [
     email: "sidr555@gmail.com",
   },
 ];
-// const farms = [
-//   {
-//     id: '2212723',
-//     user: 'sidr555@gmail.com'
-//   }
-// ]
-
-// const workers = [
-//   {
-//     name: 'RX1',
-//     farm: '2212723'
-//   },
-//   {
-//     name: 'RX2',
-//     farm: '2212723'
-//   },
-//   {
-//     name: 'NV1',
-//     farm: '2212723'
-//   },
-//   {
-//     name: 'NV2',
-//     farm: '2212723'
-//   }
-// ]
-
-// Поле `worker` определяет, в какой библиотеке хранится книга
-const boards = [
-  {
-    type: "RX580-8GB",
-    slot: 0,
-    worker: "RX1",
-    farm: "2212723",
-  },
-  {
-    type: "Nvidia 1060",
-    slot: 5,
-    worker: "NV1",
-    farm: "2212723",
-  },
-];
-
-// const typeDefs = gql`
-//   type Test {
-//     name: String
-//   }
-//   type Query {
-//     test: Test
-//   }
-// `;
 
 // Определение схемы
 const typeDefs = gql`  
@@ -132,6 +82,10 @@ const typeDefs = gql`
     power: Int
 
     # AMD specific
+    coreclk: Int
+    memclk: Int
+    core_clock: Int
+    mem_clock: Int
   }
 
 
@@ -235,7 +189,8 @@ const resolvers = {
 
     async workers(_, args, { dataSources }) {
       const workers = await dataSources.hiveAPI.getWorkers({ farm: args.farm });
-      console.log("workers res", workers.data[1].gpu_info);
+      const worker = workers.data[1];
+      console.log("workers res", worker.gpu_info, worker.gpu_stats);
 
       // const workersOut = workersIn.data.forEach( data => {
       //   console.log("worker data", data)

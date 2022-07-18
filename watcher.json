@@ -1,0 +1,9 @@
+{
+    "nvidia": {
+        "maxtemp": 50,
+        "maxfan": 0,
+        "incrules": {
+
+        }
+    }
+}

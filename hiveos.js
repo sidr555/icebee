@@ -16,7 +16,7 @@ class HiveAPI extends RESTDataSource {
 
 
     async willSendRequest(request) {
-        request.headers.set('Authorization', `Bearer: ${this.token}`)
+        request.headers.set('Authorization', `Bearer ${this.token}`)
     }
 
     // async doLogin() {
@@ -30,10 +30,10 @@ class HiveAPI extends RESTDataSource {
     //         }).catch( e => {
     //             console.log("dologinerr", e)
     //         })
-        
+
     // }
 
-    async getFarms () {
+    async getFarms() {
         return this.get('/farms')
         // .then( res => {
         //     console.log("farm RESS", res.data);
@@ -43,10 +43,52 @@ class HiveAPI extends RESTDataSource {
         //     }
         //     console.log("getFarms error", e);
         // });
-    }  
-    async getWorkers ({farm}) {
+    }
+
+    async getWorkers({ farm }) {
         return this.get(`/farms/${farm}/workers`)
     }
+
+    async overclock({worker, index, amd, nvidia}) {
+        amd |= {
+            tref_timing: ""
+        }
+
+        nvidia |= {
+            tref_timing: ""
+        }
+
+        const data = { 
+            "gpu_data": [
+                { 
+                    "gpus": [
+                        { 
+                            "worker_id": worker, 
+                            "gpu_index": index
+                        }
+                    ],
+                    amd,
+                    nvidia
+                }
+            ], 
+            "common_data": [], 
+            "workerId": worker_id 
+        }
+
+        console.log("HiveOS overclock", data);
+
+        return this.post(`/farms/${farm}/workers/overclock`, data);
+    }
+
+    async stopMiner(worker) {
+        
+    } 
+
+    async startMiner(worker) {
+        
+    }
+
+
 }
 
 
