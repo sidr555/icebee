@@ -155,14 +155,33 @@ const typeDefs = gql`
     model: String!
   }
 
-  union OverClock = OverClockAMD | OverClockNvidia
+  type OverClock {
+    nvidia: OverClockNvidia
+    amd: OverClockAMD
+    tweakers: Tweakers
+  }
 
   type OverClockNvidia {
-    power_limit: String
+    # power_limit: String
+    power_limit: [Int]
   }
 
   type OverClockAMD {
-    power_limit: String
+    #mem_clock: String
+    #core_clock: String
+    #core_state: String
+    mem_clock: [Int]
+    core_clock: [Int]
+    core_state: [Int]
+    aggressive: Boolean
+  }
+
+  type Tweakers {
+    amdtweaker: [ AmdTweak ]
+  }
+
+  type AmdTweak {
+    ref: String
   }
 
 
@@ -173,6 +192,70 @@ const typeDefs = gql`
     workers (farm: Int!): [Worker!]
     farms: [Farm!]
   }
+
+
+
+
+  input WorkerOCCommonDataAMD {
+    aggressive: Boolean
+  }
+
+  input WorkerOCCommonDataNVidia {
+    data: String
+  }
+
+  input WorkerOCCommonData {
+    amd: WorkerOCCommonDataAMD,
+    nvidia: WorkerOCCommonDataNVidia,
+    worker_ids: [ Int! ]!
+  }
+
+  input WorkerOCTweakersAMD {
+    ref: String
+  }
+  
+  input WorkerOCTweakers {
+    amdmemtweak: WorkerOCTweakersAMD
+  }
+
+  input WorkerOCGPUDataNvidia {
+    power_limit: String
+  }
+  input WorkerOCGPUDataAMD {
+    core_clock: String!
+    mem_clock: String!
+    core_state: String
+    fan_speed: String
+    power_limit: String
+  }
+
+  input WorkerOCGPUDataGPU {
+    gpu_index: Int!
+    worker_id: Int!
+  }
+  input WorkerOCGPUData {
+    nvidia: WorkerOCGPUDataNvidia
+    amd: WorkerOCGPUDataAMD
+    gpus: [ WorkerOCGPUDataGPU! ]!
+    common_data: WorkerOCCommonData
+    tweakers: WorkerOCTweakers
+  }
+
+  input WorkerOC {
+    farm: Int!
+    worker: Int!
+    gpu_data: [ WorkerOCGPUData! ]!
+  }
+
+  # union overclockWorkerResult = Worker | null 
+
+  type Mutation {
+    overclockWorker(oc: WorkerOC!): Worker 
+    #overclockWorkerResult
+  }
+
+
+
 `;
 
 // Карта резолверов
@@ -189,33 +272,22 @@ const resolvers = {
 
     async workers(_, args, { dataSources }) {
       const workers = await dataSources.hiveAPI.getWorkers({ farm: args.farm });
-      const worker = workers.data[1];
-      console.log("workers res", worker.gpu_info, worker.gpu_stats);
+      workers.data.forEach( worker => convertOverclock(worker));
 
-      // const workersOut = workersIn.data.forEach( data => {
-      //   console.log("worker data", data)
-      //   data.gpus = [];
-      //   for (let i=0; i<data.miner_stats.hashrates[0].bus_number.length; i++) {
-      //     data.gpus.push({
-      //       bus_number: data.miner_stats.hashrates[0].bus_number[i],
-      //       temp: data.miner_stats.hashrates[0].temps[i],
-      //       hash: data.miner_stats.hashrates[0].hashes[i],
-      //       fan: data.miner_stats.hashrates[0].fans[i],
-      //     });
-      //     return data
-      //   }
-      // })
-
-      // console.log(workersOut[1].gpus);
+      // console.log("worker 0 OC", workers.data[0].overclock);
+      // console.log("worker 1 OC", workers.data[1].overclock);
+      // console.log("worker 2 OC", workers.data[2].overclock);
+      // console.log("worker 3 OC", workers.data[3].overclock.tweakers.amdmemtweak);
 
       return workers.data;
     },
   },
   Farm: {
     async workers(parent, args, { dataSources }) {
-      return workersData
-      // const workers = await dataSources.hiveAPI.getWorkers({ farm: parent.id });
-      // return workers.data;
+      // return workersData
+      const workers = await dataSources.hiveAPI.getWorkers({ farm: parent.id });
+      workers.data.forEach( worker => convertOverclock(worker));
+      return workers.data;
 
       // return workers.filter((parent) => this.farm === parent.id);
     },
@@ -224,12 +296,47 @@ const resolvers = {
     //     return farms;
     //   }
   },
-  //  Worker: {
-  // gpus(parent) {
-  //   return boards.filter(board => board.worker === parent.name);
-  // }
-  // }
+
+
+  Mutation: {
+    async overclockWorker(parent, { oc }, { dataSources }) {
+      console.log("MUT overclockWorker", oc);
+      const worker = await dataSources.hiveAPI.overclockWorker(oc.farm, oc.worker, oc.gpu_data);
+      console.log("MUT overclockWorker res", worker);
+      return worker;
+
+      //workers.data.forEach( worker => convertOverclock(worker));
+      //return workers.data;
+    }
+  }
 };
+
+function convertOverclock(worker) {
+  if (worker.overclock) {
+    if (worker.overclock.nvidia) {
+      worker.overclock.nvidia.power_limit = ocToArray(worker.overclock.nvidia.power_limit, worker.gpu_info.length);
+    }
+    if (worker.overclock.amd) {
+      worker.overclock.amd.mem_clock = ocToArray(worker.overclock.amd.mem_clock, worker.gpu_info.length);
+      worker.overclock.amd.core_clock = ocToArray(worker.overclock.amd.core_clock, worker.gpu_info.length);
+      worker.overclock.amd.core_state = ocToArray(worker.overclock.amd.core_state, worker.gpu_info.length);
+      worker.overclock.amd.power_limit = ocToArray(worker.overclock.amd.power_limit, worker.gpu_info.length);
+    }
+  }
+}
+
+function ocToArray(str, len) {
+  if (typeof str === "undefined") { 
+    str = "0";
+  }
+  let arr = str.split(" ").map(s => 1*s);
+  if (arr.length === 1) {
+    for (let i = 1; i < len; i++) {
+      arr.push(arr[0]);
+    }
+  }
+  return arr;
+}
 
 // Передаем схему и резовлеры в конструктор `ApolloServer`
 const server = new ApolloServer({

@@ -1,425 +1,944 @@
-[
-  {
-    "id": 4857668,
-    "name": "sidr_nv1",
-    "active": true,
-    "vpn": true,
-    "units_count": 12,
-    "system_type": "linux",
-    "ip_addresses": ["192.168.0.64", "10.8.8.7"],
-    "needs_upgrade": true,
-    "stats": {
-      "online": true,
-      "gpus_online": 12,
-      "gpus_offline": 0,
-      "gpus_overheated": 0,
-      "invalid": false,
-      "overloaded": false,
-      "overheated": false,
-      "problems": []
-    },
-    "hardware_info": {
-      "motherboard": {
-        "manufacturer": "BIOSTAR Group",
-        "model": "TB250-BTC PRO"
-      },
-      "disc": null
-    },
-    "gpu_stats": [
-      { "bus_number": 1, "temp": 45, "power": 60, "hash": 17729, "fan": 0 },
-      { "bus_number": 2, "temp": 45, "power": 60, "hash": 17269, "fan": 0 },
-      { "bus_number": 3, "temp": 49, "power": 60, "hash": 17598, "fan": 0 },
-      { "bus_number": 4, "temp": 41, "power": 59, "hash": 17420, "fan": 0 },
-      { "bus_number": 5, "temp": 42, "power": 60, "hash": 17568, "fan": 0 },
-      { "bus_number": 7, "temp": 46, "power": 60, "hash": 17340, "fan": 0 },
-      { "bus_number": 8, "temp": 47, "power": 60, "hash": 17853, "fan": 0 },
-      { "bus_number": 9, "temp": 42, "power": 60, "hash": 17506, "fan": 0 },
-      { "bus_number": 10, "temp": 43, "power": 60, "hash": 17521, "fan": 0 },
-      { "bus_number": 11, "temp": 40, "power": 60, "hash": 17344, "fan": 0 },
-      { "bus_number": 12, "temp": 44, "power": 59, "hash": 17348, "fan": 0 },
-      { "bus_number": 13, "temp": 46, "power": 60, "hash": 17796, "fan": 0 }
-    ],
-    "gpu_info": [
-      {
-        "bus_number": 0,
-        "model": "HD Graphics 510",
-        "brand": "internal",
-        "details": { "mem_gb": null, "mem_type": null }
-      },
-      {
-        "bus_number": 1,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 2,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 3,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 4,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 5,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 7,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 8,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 9,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 10,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 11,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 12,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 13,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      }
-    ]
-  },
-  {
-    "id": 4924546,
-    "name": "sidr_nv2",
-    "active": true,
-    "vpn": true,
-    "units_count": 11,
-    "system_type": "linux",
-    "ip_addresses": ["192.168.0.41", "10.8.8.12"],
-    "needs_upgrade": true,
-    "stats": {
-      "online": true,
-      "gpus_online": 11,
-      "gpus_offline": 0,
-      "gpus_overheated": 0,
-      "invalid": false,
-      "overloaded": false,
-      "overheated": false,
-      "problems": ["error_message"]
-    },
-    "hardware_info": {
-      "motherboard": {
-        "manufacturer": "BIOSTAR Group",
-        "model": "TB250-BTC PRO"
-      },
-      "disc": null
-    },
-    "gpu_stats": [
-      { "bus_number": 1, "temp": 42, "power": 60, "hash": 17731, "fan": 0 },
-      { "bus_number": 2, "temp": 43, "power": 61, "hash": 17448, "fan": 0 },
-      { "bus_number": 3, "temp": 45, "power": 59, "hash": 17553, "fan": 0 },
-      { "bus_number": 4, "temp": 46, "power": 60, "hash": 17644, "fan": 0 },
-      { "bus_number": 5, "temp": 47, "power": 61, "hash": 17574, "fan": 0 },
-      { "bus_number": 7, "temp": 46, "power": 60, "hash": 17761, "fan": 0 },
-      { "bus_number": 8, "temp": 43, "power": 61, "hash": 17386, "fan": 0 },
-      { "bus_number": 9, "temp": 48, "power": 60, "hash": 17447, "fan": 0 },
-      { "bus_number": 10, "temp": 49, "power": 60, "hash": 17342, "fan": 0 },
-      { "bus_number": 11, "temp": 44, "power": 61, "hash": 17509, "fan": 0 },
-      { "bus_number": 12, "temp": 44, "power": 61, "hash": 17397, "fan": 0 }
-    ],
-    "gpu_info": [
-      {
-        "bus_number": 0,
-        "model": "HD Graphics 510",
-        "brand": "internal",
-        "details": { "mem_gb": null, "mem_type": null }
-      },
-      {
-        "bus_number": 1,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 2,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 3,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 4,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 5,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 7,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 8,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 9,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 10,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 11,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      },
-      {
-        "bus_number": 12,
-        "model": "P106-100",
-        "brand": "nvidia",
-        "details": { "mem_gb": 6, "mem_type": "Samsung GDDR5" }
-      }
-    ]
-  },
-  {
-    "id": 4946076,
-    "name": "sidr_rx1",
-    "active": true,
-    "vpn": true,
-    "units_count": 10,
-    "system_type": "linux",
-    "ip_addresses": ["192.168.0.39", "10.8.8.15"],
-    "needs_upgrade": true,
-    "stats": {
-      "online": true,
-      "gpus_online": 10,
-      "gpus_offline": 0,
-      "gpus_overheated": 7,
-      "invalid": false,
-      "overloaded": false,
-      "overheated": true,
-      "problems": ["overheat", "error_message"]
-    },
-    "hardware_info": {
-      "motherboard": {
-        "manufacturer": "BIOSTAR Group",
-        "model": "TB250-BTC PRO"
-      },
-      "disc": null
-    },
-    "gpu_stats": [
-      { "bus_number": 1, "temp": 53, "power": 108, "hash": 30319, "fan": 7 },
-      { "bus_number": 2, "temp": 56, "power": 91, "hash": 26733, "fan": 20 },
-      { "bus_number": 3, "temp": 56, "power": 87, "hash": 27450, "fan": 22 },
-      { "bus_number": 5, "temp": 55, "power": 81, "hash": 24938, "fan": 20 },
-      { "bus_number": 6, "temp": 56, "power": 64, "hash": 16629, "fan": 30 },
-      { "bus_number": 7, "temp": 56, "power": 75, "hash": 22162, "fan": 7 },
-      { "bus_number": 8, "temp": 56, "power": 86, "hash": 27638, "fan": 23 },
-      { "bus_number": 9, "temp": 49, "power": 85, "hash": 19657, "fan": 7 },
-      { "bus_number": 10, "temp": 56, "power": 69, "hash": 19266, "fan": 29 },
-      { "bus_number": 11, "temp": 53, "power": 108, "hash": 30417, "fan": 7 }
-    ],
-    "gpu_info": [
-      {
-        "bus_number": 0,
-        "model": "HD Graphics 510",
-        "brand": "internal",
-        "details": { "mem_gb": null, "mem_type": null }
-      },
-      {
-        "bus_number": 1,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 2,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 3,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 5,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 6,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 7,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 8,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 9,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 10,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 11,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      }
-    ]
-  },
-  {
-    "id": 4946087,
-    "name": "sidr_rx2",
-    "active": true,
-    "vpn": false,
-    "units_count": 5,
-    "system_type": "linux",
-    "ip_addresses": ["192.168.0.49"],
-    "needs_upgrade": true,
-    "stats": {
-      "online": true,
-      "gpus_online": 3,
-      "gpus_offline": 2,
-      "gpus_overheated": 3,
-      "invalid": false,
-      "overloaded": false,
-      "overheated": true,
-      "problems": ["overheat", "missed_unit"]
-    },
-    "hardware_info": {
-      "motherboard": {
-        "manufacturer": "BIOSTAR Group",
-        "model": "TB250-BTC PRO"
-      },
-      "disc": null
-    },
-    "gpu_stats": [
-      { "bus_number": 2, "temp": 56, "power": 86, "hash": 27640, "fan": 52 },
-      { "bus_number": 3, "temp": 56, "power": 89, "hash": 27640, "fan": 27 },
-      { "bus_number": 4, "temp": 56, "power": 88, "hash": 27633, "fan": 30 }
-    ],
-    "gpu_info": [
-      {
-        "bus_number": 0,
-        "model": "HD Graphics 510",
-        "brand": "internal",
-        "details": { "mem_gb": null, "mem_type": null }
-      },
-      {
-        "bus_number": 2,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 3,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      },
-      {
-        "bus_number": 4,
-        "model": "Radeon RX 580",
-        "brand": "amd",
-        "details": { "mem_gb": 8, "mem_type": "SK Hynix H5GQ8H24MJR" }
-      }
-    ]
-  },
-  {
-    "id": 5530349,
-    "name": "Rig #5530349",
-    "active": true,
-    "vpn": false,
-    "units_count": null,
-    "system_type": null,
-    "ip_addresses": null,
-    "needs_upgrade": false,
-    "stats": {
-      "online": false,
-      "gpus_online": null,
-      "gpus_offline": null,
-      "gpus_overheated": null,
-      "invalid": null,
-      "overloaded": null,
-      "overheated": null,
-      "problems": null
-    },
-    "hardware_info": null,
-    "gpu_stats": null,
-    "gpu_info": []
-  }
-]
+{
+    "data": {
+        "workers": [
+            {
+                "id": 4857668,
+                "name": "sidr_nv1",
+                "active": true,
+                "vpn": true,
+                "units_count": 12,
+                "system_type": "linux",
+                "ip_addresses": [
+                    "192.168.0.64",
+                    "10.8.8.8"
+                ],
+                "needs_upgrade": true,
+                "stats": {
+                    "online": true,
+                    "gpus_online": 0,
+                    "gpus_offline": 12,
+                    "gpus_overheated": 0,
+                    "invalid": false,
+                    "overloaded": false,
+                    "overheated": false,
+                    "problems": [
+                        "missed_unit",
+                        "no_hashrate"
+                    ]
+                },
+                "hardware_info": {
+                    "motherboard": {
+                        "manufacturer": "BIOSTAR Group",
+                        "model": "TB250-BTC PRO"
+                    },
+                    "disc": null
+                },
+                "overclock": {
+                    "amd": null,
+                    "nvidia": {
+                        "power_limit": [
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            65,
+                            60,
+                            60
+                        ]
+                    },
+                    "tweakers": null
+                },
+                "gpu_stats": [
+                    {
+                        "bus_number": 1,
+                        "temp": 38,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 2,
+                        "temp": 39,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 3,
+                        "temp": 39,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 4,
+                        "temp": 35,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 5,
+                        "temp": 37,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 7,
+                        "temp": 38,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 8,
+                        "temp": 39,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 9,
+                        "temp": 36,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 10,
+                        "temp": 37,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 11,
+                        "temp": 35,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 12,
+                        "temp": 38,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 13,
+                        "temp": 38,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    }
+                ],
+                "gpu_info": [
+                    {
+                        "bus_number": 0,
+                        "index": null,
+                        "model": "HD Graphics 510",
+                        "brand": "internal",
+                        "details": {
+                            "mem_gb": null,
+                            "mem_type": null
+                        }
+                    },
+                    {
+                        "bus_number": 1,
+                        "index": 0,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 2,
+                        "index": 1,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 3,
+                        "index": 2,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 4,
+                        "index": 3,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 5,
+                        "index": 4,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 7,
+                        "index": 5,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 8,
+                        "index": 6,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 9,
+                        "index": 7,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 10,
+                        "index": 8,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 11,
+                        "index": 9,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 12,
+                        "index": 10,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 13,
+                        "index": 11,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 4924546,
+                "name": "sidr_nv2",
+                "active": true,
+                "vpn": true,
+                "units_count": 11,
+                "system_type": "linux",
+                "ip_addresses": [
+                    "192.168.0.41",
+                    "10.8.8.3"
+                ],
+                "needs_upgrade": true,
+                "stats": {
+                    "online": true,
+                    "gpus_online": 0,
+                    "gpus_offline": 11,
+                    "gpus_overheated": 0,
+                    "invalid": false,
+                    "overloaded": false,
+                    "overheated": false,
+                    "problems": [
+                        "missed_unit",
+                        "no_hashrate",
+                        "error_message"
+                    ]
+                },
+                "hardware_info": {
+                    "motherboard": {
+                        "manufacturer": "BIOSTAR Group",
+                        "model": "TB250-BTC PRO"
+                    },
+                    "disc": null
+                },
+                "overclock": {
+                    "amd": null,
+                    "nvidia": {
+                        "power_limit": [
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60,
+                            60
+                        ]
+                    },
+                    "tweakers": null
+                },
+                "gpu_stats": [
+                    {
+                        "bus_number": 1,
+                        "temp": 35,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 2,
+                        "temp": 35,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 3,
+                        "temp": 39,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 4,
+                        "temp": 37,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 5,
+                        "temp": 39,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 7,
+                        "temp": 38,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 8,
+                        "temp": 36,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 9,
+                        "temp": 40,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 10,
+                        "temp": 40,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 11,
+                        "temp": 37,
+                        "power": 24,
+                        "hash": null,
+                        "fan": 0
+                    },
+                    {
+                        "bus_number": 12,
+                        "temp": 38,
+                        "power": 25,
+                        "hash": null,
+                        "fan": 0
+                    }
+                ],
+                "gpu_info": [
+                    {
+                        "bus_number": 0,
+                        "index": null,
+                        "model": "HD Graphics 510",
+                        "brand": "internal",
+                        "details": {
+                            "mem_gb": null,
+                            "mem_type": null
+                        }
+                    },
+                    {
+                        "bus_number": 1,
+                        "index": 0,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 2,
+                        "index": 1,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 3,
+                        "index": 2,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 4,
+                        "index": 3,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 5,
+                        "index": 4,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 7,
+                        "index": 5,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 8,
+                        "index": 6,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 9,
+                        "index": 7,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 10,
+                        "index": 8,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 11,
+                        "index": 9,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    },
+                    {
+                        "bus_number": 12,
+                        "index": 10,
+                        "model": "P106-100",
+                        "brand": "nvidia",
+                        "details": {
+                            "mem_gb": 6,
+                            "mem_type": "Samsung GDDR5"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 4946076,
+                "name": "sidr_rx1",
+                "active": true,
+                "vpn": true,
+                "units_count": 10,
+                "system_type": "linux",
+                "ip_addresses": [
+                    "192.168.0.39",
+                    "10.8.8.3"
+                ],
+                "needs_upgrade": true,
+                "stats": {
+                    "online": true,
+                    "gpus_online": 10,
+                    "gpus_offline": 0,
+                    "gpus_overheated": 3,
+                    "invalid": false,
+                    "overloaded": false,
+                    "overheated": true,
+                    "problems": [
+                        "overheat",
+                        "error_message"
+                    ]
+                },
+                "hardware_info": {
+                    "motherboard": {
+                        "manufacturer": "BIOSTAR Group",
+                        "model": "TB250-BTC PRO"
+                    },
+                    "disc": null
+                },
+                "overclock": {
+                    "amd": {
+                        "mem_clock": [
+                            2000,
+                            2000,
+                            2000,
+                            2000,
+                            1200,
+                            1800,
+                            2000,
+                            2200,
+                            2000,
+                            2000
+                        ],
+                        "core_clock": [
+                            1000,
+                            1000,
+                            1000,
+                            900,
+                            600,
+                            800,
+                            1000,
+                            1200,
+                            1000,
+                            1000
+                        ],
+                        "core_state": [
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                            1
+                        ],
+                        "aggressive": true
+                    },
+                    "nvidia": null,
+                    "tweakers": {
+                        "amdtweaker": null
+                    }
+                },
+                "gpu_stats": [
+                    {
+                        "bus_number": 1,
+                        "temp": 51,
+                        "power": 89,
+                        "hash": 27637,
+                        "fan": 7
+                    },
+                    {
+                        "bus_number": 2,
+                        "temp": 55,
+                        "power": 91,
+                        "hash": 26724,
+                        "fan": 44
+                    },
+                    {
+                        "bus_number": 3,
+                        "temp": 56,
+                        "power": 87,
+                        "hash": 27580,
+                        "fan": 40
+                    },
+                    {
+                        "bus_number": 5,
+                        "temp": 54,
+                        "power": 81,
+                        "hash": 24936,
+                        "fan": 47
+                    },
+                    {
+                        "bus_number": 6,
+                        "temp": 54,
+                        "power": 63,
+                        "hash": 16628,
+                        "fan": 64
+                    },
+                    {
+                        "bus_number": 7,
+                        "temp": 54,
+                        "power": 74,
+                        "hash": 22160,
+                        "fan": 50
+                    },
+                    {
+                        "bus_number": 8,
+                        "temp": 54,
+                        "power": 86,
+                        "hash": 27637,
+                        "fan": 40
+                    },
+                    {
+                        "bus_number": 9,
+                        "temp": 51,
+                        "power": 74,
+                        "hash": 17897,
+                        "fan": 7
+                    },
+                    {
+                        "bus_number": 10,
+                        "temp": 55,
+                        "power": 67,
+                        "hash": 19813,
+                        "fan": 73
+                    },
+                    {
+                        "bus_number": 11,
+                        "temp": 51,
+                        "power": 90,
+                        "hash": 27635,
+                        "fan": 7
+                    }
+                ],
+                "gpu_info": [
+                    {
+                        "bus_number": 0,
+                        "index": null,
+                        "model": "HD Graphics 510",
+                        "brand": "internal",
+                        "details": {
+                            "mem_gb": null,
+                            "mem_type": null
+                        }
+                    },
+                    {
+                        "bus_number": 1,
+                        "index": 0,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 2,
+                        "index": 1,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 3,
+                        "index": 2,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 5,
+                        "index": 3,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 6,
+                        "index": 4,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 7,
+                        "index": 5,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 8,
+                        "index": 6,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 9,
+                        "index": 7,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 10,
+                        "index": 8,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 11,
+                        "index": 9,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 4946087,
+                "name": "sidr_rx2",
+                "active": true,
+                "vpn": false,
+                "units_count": 5,
+                "system_type": "linux",
+                "ip_addresses": [
+                    "192.168.0.49"
+                ],
+                "needs_upgrade": true,
+                "stats": {
+                    "online": true,
+                    "gpus_online": 3,
+                    "gpus_offline": 2,
+                    "gpus_overheated": 2,
+                    "invalid": false,
+                    "overloaded": false,
+                    "overheated": true,
+                    "problems": [
+                        "overheat",
+                        "missed_unit"
+                    ]
+                },
+                "hardware_info": {
+                    "motherboard": {
+                        "manufacturer": "BIOSTAR Group",
+                        "model": "TB250-BTC PRO"
+                    },
+                    "disc": null
+                },
+                "overclock": {
+                    "amd": {
+                        "mem_clock": [
+                            1800,
+                            2000,
+                            2000,
+                            2000
+                        ],
+                        "core_clock": [
+                            800,
+                            1000,
+                            1000,
+                            1000
+                        ],
+                        "core_state": [
+                            1,
+                            1,
+                            1,
+                            1,
+                            1
+                        ],
+                        "aggressive": true
+                    },
+                    "nvidia": null,
+                    "tweakers": {
+                        "amdtweaker": null
+                    }
+                },
+                "gpu_stats": [
+                    {
+                        "bus_number": 2,
+                        "temp": 54,
+                        "power": 73,
+                        "hash": 22157,
+                        "fan": 56
+                    },
+                    {
+                        "bus_number": 3,
+                        "temp": 55,
+                        "power": 88,
+                        "hash": 27638,
+                        "fan": 48
+                    },
+                    {
+                        "bus_number": 4,
+                        "temp": 55,
+                        "power": 87,
+                        "hash": 27638,
+                        "fan": 56
+                    }
+                ],
+                "gpu_info": [
+                    {
+                        "bus_number": 0,
+                        "index": null,
+                        "model": "HD Graphics 510",
+                        "brand": "internal",
+                        "details": {
+                            "mem_gb": null,
+                            "mem_type": null
+                        }
+                    },
+                    {
+                        "bus_number": 2,
+                        "index": 0,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 3,
+                        "index": 1,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    },
+                    {
+                        "bus_number": 4,
+                        "index": 2,
+                        "model": "Radeon RX 580",
+                        "brand": "amd",
+                        "details": {
+                            "mem_gb": 8,
+                            "mem_type": "SK Hynix H5GQ8H24MJR"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 5530349,
+                "name": "Rig #5530349",
+                "active": true,
+                "vpn": false,
+                "units_count": null,
+                "system_type": null,
+                "ip_addresses": null,
+                "needs_upgrade": false,
+                "stats": {
+                    "online": false,
+                    "gpus_online": null,
+                    "gpus_offline": null,
+                    "gpus_overheated": null,
+                    "invalid": null,
+                    "overloaded": null,
+                    "overheated": null,
+                    "problems": null
+                },
+                "hardware_info": null,
+                "overclock": null,
+                "gpu_stats": null,
+                "gpu_info": []
+            }
+        ]
+    }
+}

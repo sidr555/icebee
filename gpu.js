@@ -1,5 +1,7 @@
 const HiveAPI = require("./hiveos");
+const hiveapi = new HiveAPI();
 
+// const { ApolloClient, InMemoryCache } = require("apollo")
 class GPU {
     temp = {
         max: 80
@@ -10,11 +12,16 @@ class GPU {
     }
 
 
-    constructor(worker, info, stat) {
+    constructor(farm, worker, info, stat, oc ) {
+        this.farm = farm
         this.worker = worker
         this.info = info
         this.stat = stat
         this.brand = info.brand
+        this.oc = oc
+        this.index = info.index
+
+        // console.log("worker", this);
     }
 
     isOverheated() {
@@ -49,6 +56,7 @@ class GPU {
     }
 
     async overclock() {
+        console.log("overclock", this)
         const data = {
             gpu_data: [
                 {
@@ -56,7 +64,7 @@ class GPU {
                     amd: {},
                     gpus: [
                         {
-                            gpu_index: this.info.index,
+                            gpu_index: this.index,
                             worker_id: this.worker
                         }
                     ]
@@ -71,10 +79,10 @@ class GPU {
 
         if (oc) {
             data.gpu_data[this.brand] = oc;
-            const res = await HiveAPI.overclock(data);
+            const res = await hiveapi.overclock(this.farm, data);
             console.log("OC result for", { 
                 worker: this.worker, 
-                brand: this.brand,
+                brand: this.info.brand,
                 info: this.info,
                 res
             });

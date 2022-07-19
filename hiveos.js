@@ -33,7 +33,7 @@ class HiveAPI extends RESTDataSource {
 
     // }
 
-    async getFarms() {
+    getFarms() {
         return this.get('/farms')
         // .then( res => {
         //     console.log("farm RESS", res.data);
@@ -45,11 +45,30 @@ class HiveAPI extends RESTDataSource {
         // });
     }
 
-    async getWorkers({ farm }) {
+    getWorkers({ farm }) {
         return this.get(`/farms/${farm}/workers`)
     }
 
-    async overclock({worker, index, amd, nvidia}) {
+    getWorker({ farm, worker }) {
+        return this.get(`/farms/${farm}/workers/${worker}`)
+    }
+
+    async overclockWorker(farm, worker, gpu_data ) {
+        console.log("HiveOS overclock", farm, worker, gpu_data);
+        const res = await this.post(`/farms/${farm}/workers/overclock`, { gpu_data });
+
+        // console.log("HiveOS overclock res", res.commands[0].commands);
+        console.log("HiveOS overclock res", res.length);
+        
+        if (res.commands && res.commands.length) {
+            const workerUpdated = await this.getWorker({ farm, worker });
+            console.log("overclock worker up", workerUpdated)
+        // } else {
+            // return;
+        } 
+    }
+
+    async overclock_bak({worker, index, amd, nvidia}) {
         amd |= {
             tref_timing: ""
         }
@@ -86,7 +105,7 @@ class HiveAPI extends RESTDataSource {
 
     async startMiner(worker) {
         
-    }
+    } 
 
 
 }
