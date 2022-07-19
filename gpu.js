@@ -1,7 +1,7 @@
 const HiveAPI = require("./hiveos");
 const hiveapi = new HiveAPI();
 
-// const { ApolloClient, InMemoryCache } = require("apollo")
+
 class GPU {
     temp = {
         max: 80
@@ -79,7 +79,7 @@ class GPU {
 
         if (oc) {
             data.gpu_data[this.brand] = oc;
-            const res = await hiveapi.overclock(this.farm, data);
+            const res = await hiveapi.overclockWorker(this.farm, this.worker, data);
             console.log("OC result for", { 
                 worker: this.worker, 
                 brand: this.info.brand,

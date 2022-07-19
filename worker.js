@@ -1,6 +1,8 @@
 const { BaseRedisCache } = require("apollo-server-cache-redis");
 const Redis = require("ioredis");
 
+const redis = new Redis();
+
 const { ApolloServer, gql } = require("apollo-server");
 
 
@@ -8,6 +10,7 @@ const HiveAPI = require("./hiveos");
 
 
 const workersData = require("./hiveos.workers.json");
+const { watch } = require("fs");
 
 //const fetch = require('node-fetch')
 // import fetch from 'node-fetch';
@@ -247,10 +250,17 @@ const typeDefs = gql`
     gpu_data: [ WorkerOCGPUData! ]!
   }
 
+  input inputWatchWorkerOC {
+    farm: Int!,
+    worker: Int!,
+    period: Int
+  }
+
   # union overclockWorkerResult = Worker | null 
 
   type Mutation {
     overclockWorker(oc: WorkerOC!): Worker 
+    watchWorkerOC(data: inputWatchWorkerOC): Boolean
     #overclockWorkerResult
   }
 
@@ -307,11 +317,35 @@ const resolvers = {
 
       //workers.data.forEach( worker => convertOverclock(worker));
       //return workers.data;
+    },
+
+    watchWorkerOC(parent, { data }, { dataSources }) {
+      console.log("watchWorkerOC", data.worker, data.farm);
+      const { farm, worker, period } = data;
+      if (!farm || !worker) {
+        console.log("watchWorkerOC - Bad input data", data);
+        return false;
+      }
+      const key = `watch-workers:hive:${farm}:${worker}`;
+      if (!period) {
+        redis.del(key);
+      } else {
+        const time = parseInt(Date.now()/1000) + period;
+        console.log("time", time)
+        // redis.hset(key, "farm", farm);
+        // redis.hset(key, "worker", worker);
+        // redis.hset(key, "period", period);
+        // redis.hset(key, "time", time);
+        // redis.hset(key, {farm, worker, period, time});
+        redis.hset(key, "farm", farm, "worker", worker, "period", period, "time", time);
+        redis.zadd("watch-workers", time, key);
+      }
+      return true;
     }
   }
-};
-
-function convertOverclock(worker) {
+};   
+                                   
+function convertOverclock(worker) {                                                                                                                                                                                                                                   x
   if (worker.overclock) {
     if (worker.overclock.nvidia) {
       worker.overclock.nvidia.power_limit = ocToArray(worker.overclock.nvidia.power_limit, worker.gpu_info.length);
@@ -359,3 +393,41 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`🚀  Сервер запущен по адресу: ${url}`);
 });
+
+
+const watcher = () => {
+  redis.zrange("watch-workers", 0, 10, (err, res) => {
+    if (err) {
+      console.log("watcher error", err);
+      return false;
+    }
+
+    const now = parseInt(Date.now()/1000);
+    res.forEach(key => {
+      redis.hget(key, "time", (err, timeStr) => {
+        if (!err && timeStr) {
+          let time = parseInt(timeStr);
+          console.log("test key", key, time, now, now-time);
+          if (time <= now) {
+            console.log("process key", key, "delta", now-time, "sec");
+            redis.hget(key, "period", (err, period) => {
+              if (!err) {
+                time += 1*period;
+                redis.zadd("watch-workers", time, key);
+                redis.hset(key, "time", time);
+                redis.hset(key, "period", 10);
+
+              }
+            });
+          }
+        }  
+      });
+    });
+
+
+    // console.log("watcher res", res.length, res);
+
+  })
+}
+
+setInterval(watcher, 2000);

@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { RESTDataSource } = require('apollo-datasource-rest')
+const { RESTDataSource } = require('apollo-datasource-rest');
 
 class HiveAPI extends RESTDataSource {
 
