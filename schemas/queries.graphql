@@ -1,0 +1,7 @@
+  type Query {
+    boards: [Board!]
+    worker (farm: Int!, worker: Int!): Worker
+    workers (farm: Int!): [Worker!]
+    farms: [Farm!]
+  }
+

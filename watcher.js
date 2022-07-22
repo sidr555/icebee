@@ -1,11 +1,6 @@
-
 const NvidiaGPU = require("./nvidia.gpu");
 const AmdGPU = require("./amd.gpu");
-// const Workers = require("./worker")
-// const workers = require("./hiveos.workers.json");
-// const HiveAPI = require("./hiveos");
 
-// const { gql } = require("apollo-server");
 const { ApolloClient, HttpLink, InMemoryCache, gql } = require("@apollo/client")
 const fetch = require('cross-fetch');
 
@@ -16,42 +11,19 @@ const client = new ApolloClient({
 });
 
 
-// const hiveapi = new HiveAPI();
-// hiveapi.initialize();
+const Redis = require("ioredis");
+const redis = new Redis();
 
-const farm = 2212723;
+
+
+
 
 
 const QUERY_FARM_WORKERS = gql`
-query WorkersQuery ($farm: Int!) {
-    workers(farm: $farm) {
+query WorkerQuery ($farm: Int!, $worker: Int!) {
+    worker(farm: $farm, worker: $worker) {
       id
       name
-      active
-      vpn
-      units_count
-      system_type
-      ip_addresses
-      needs_upgrade
-      stats {
-        online
-        gpus_online
-        gpus_offline
-        gpus_overheated
-        invalid
-        overloaded
-        overheated
-        problems
-      }
-      hardware_info {
-        motherboard {
-          manufacturer
-          model
-        }
-        disc {
-          model
-        }
-      }
       gpu_stats {
         bus_number
         temp
@@ -62,70 +34,221 @@ query WorkersQuery ($farm: Int!) {
       gpu_info {
         bus_number
         index
-        model
         brand
-        details {
-          mem_gb
-          mem_type
+      }
+      overclock {
+        nvidia {
+          power_limit
+        }
+        amd {
+          mem_clock
+          core_clock
+        }
+        tweakers {
+          amdtweaker {
+            ref
+          }
         }
       }
     }  
   }
-  `
+`
 
-const workers = client.query({
-    query: QUERY_FARM_WORKERS,
-    variables: { farm }
-}).then( res => {
-    console.log("workers", res.data.workers)
+// const OVERCLOCK_WORKER = gql`
+//   mutation OC($oc: WorkerOC!) {
+//     overclockWorker(oc: $oc) {
 
-}).catch(err => console.log("farm workers error", err));
+//     }  
+//   } 
+// `
 
 
+const OVERCLOCK_NVIDIA_GPU = gql`
+  mutation OverclockNvidia($farm: Int!, $worker: Int!, $index: Int, $power: Int!) {
+    overclockNvidiaGPU(farm: $farm, worker: $worker, index: $index, power: $power)
+  } 
+`
 
-if (false) {
-//workers.forEach(worker => {
-    const worker = workers.data.workers[2];
-    const overclock = worker.overclock;
-    console.log("worker OC", overclock);
+
+async function checkWorkerOC(farm, worker_id) {
+  // const data = {
+  //   farm: parseInt(farm),
+  //   worker: parseInt(worker_id)
+  // }
+  // console.log("check workers OC", data);
+
+  // get worker
+  const res = await client.query({
+    query: QUERY_FARM_WORKERS, 
+    variables: {
+      farm: parseInt(farm),
+      worker: parseInt(worker_id)
+    }
+  });
+
+  const worker = res.data.worker;
+
+  // console.log("worker data", worker);
+
+  
+  // worker.gpu_info.forEach(async gpu => {
+  const request = worker.gpu_info.reduce((req, gpu) => {
     
-    worker.gpu_info.forEach(async gpu => {
-        const stat = worker.gpu_stats.find(item => item.bus_number === gpu.bus_number);
+    const stat = worker.gpu_stats.find(item => item.bus_number === gpu.bus_number);
 
-        const GPUClass = gpu.brand === "amd" ? AmdGPU : NvidiaGPU;
+    // console.log("brand", gpu.brand, gpu)
+    // return;
+    if (gpu.brand === "amd" || gpu.brand === "nvidia") {
 
-        const board = new GPUClass({
+      if (gpu.index !== 5) return req;
+
+      const GPUClass = gpu.brand === "amd" ? AmdGPU : NvidiaGPU;
+
+      const board = new GPUClass({
+          farm,
+          worker: worker.id,
+          info: gpu,
+          stat,
+          oc: worker.overclock
+      });
+
+      const oc = board.getOverclockParams();
+      if (oc) {
+
+        console.log("send mut", {
+          farm,
+          worker: worker_id,
+          index: board.index,
+          power: oc.power_limit
+        });
+
+        client.mutate({
+          mutation: OVERCLOCK_NVIDIA_GPU,
+          variables: {
             farm,
-            worker: worker.id,
-            gpu,
-            stat,
-            oc: worker.overclock,
-            send: () => {
-                client.mutate({
-                    mutate: gql``
-                })
-            }
+            worker: worker_id,
+            index: board.index,
+            power: oc.power_limit
+          }
+        }).then(res => {
+          console.log("mutate res", res)
+        }).catch(err => {
+          console.log("mutate err", err)
         })
 
-        if (gpu.brand === "amd") {
-            board = new AmdGPU(farm, worker.id, gpu, stat, worker.overclock, hiveapi);
-        } else if (gpu.brand === "nvidia") {
-            board = new NvidiaGPU(farm, worker.id, gpu, stat, worker.overclock, hiveapi);
-        } else {
-            return;
-        }
+        // const item = {
+        //     // nvidia: {},
+        //     // amd: {},
+        //     gpus: [
+        //         {
+        //             gpu_index: board.index,
+        //             worker_id
+        //         }
+        //     ]
+        // }
 
-        //const gpu = new GPU(worker, gpu, stat);
-        const oc = await board.overclock();
-        if (oc) {
-            console.log("GPU overclock is changed");
-        } else if (board.isOverheated()) {
-            console.log("GPU cannot been overclocked but it is very HOT! You must fix it yourself");
-        } else {
+        // item[board.brand] = oc;
 
-        }
+        // req.gpu_data.push(item);
+      }
 
+//       req.common_data[board.brand] = board.getCommonDataParams();
+//  //     Object.assign(req.common_data.tweakers, board.getTweakers());
+//       req.tweakers = board.getTweakers()
+
+    }
+
+    return req;
+
+    // if (gpu.brand === "amd") {
+    //     board = new AmdGPU(farm, worker.id, gpu, stat, worker.overclock, hiveapi);
+    // } else if (gpu.brand === "nvidia") {
+    //     board = new NvidiaGPU(farm, worker.id, gpu, stat, worker.overclock, hiveapi);
+    // } else {
+    //     return;
+    // }
+
+    //const gpu = new GPU(worker, gpu, stat);
+
+
+
+
+
+    // const oc = await board.overclock();
+    // if (oc) {
+    //     console.log("GPU overclock is changed");
+    // } else if (board.isOverheated()) {
+    //     console.log("GPU cannot been overclocked but it is very HOT! You must fix it yourself");
+    // } else {
+
+    // }
+
+  }, {
+    gpu_data: [], 
+    common_data: {
+      // amd: {},
+      // nvidia: {},
+      worker_ids: [ worker_id ]
+    },
+    tweakers: {}
+  });
+
+  return;
+  console.log("res arr", request.gpu_data);
+
+  if (request.gpu_data && request.gpu_data.length) {
+
+    console.log(JSON.stringify(request));
+
+
+
+    // console.log(gql(JSON.stringify(request)));
+  }
+  
+
+}
+
+
+
+const watcher = () => {
+  redis.zrange("watch-workers", 0, 10, (err, res) => {
+    if (err) {
+      console.log("watcher error", err);
+      return false;
+    }
+
+    const now = parseInt(Date.now()/1000);
+    res.forEach(key => {
+      redis.hget(key, "time", (err, timeStr) => {
+        if (!err && timeStr) {
+          let time = parseInt(timeStr);
+          // console.log("test key", key, time, now, now-time);
+          if (time <= now) {
+            const [_, os, farm, worker] = key.split(":");
+            
+            checkWorkerOC(farm, worker);
+
+            // increase period
+            redis.hget(key, "period", (err, period) => {
+              if (!err) {
+                time += 1*period;
+                redis.zadd("watch-workers", time, key);
+                redis.hset(key, "time", time);
+                redis.hset(key, "period", 10);
+              }
+            });
+
+            // watch OC settings of worker
+             
+          }
+        }  
+      });
     });
 
-// })
+
+    // console.log("watcher res", res.length, res);
+
+  })
 }
+
+setInterval(watcher, 2000);

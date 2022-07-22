@@ -12,7 +12,8 @@ class GPU {
     }
 
 
-    constructor(farm, worker, info, stat, oc ) {
+    constructor({ farm, worker, info, stat, oc }) {
+        // console.log("construct GPU", info)
         this.farm = farm
         this.worker = worker
         this.info = info
@@ -21,7 +22,7 @@ class GPU {
         this.oc = oc
         this.index = info.index
 
-        // console.log("worker", this);
+        // console.log("worker oc", this.oc);
     }
 
     isOverheated() {
@@ -55,8 +56,34 @@ class GPU {
         return data;
     }
 
+    // async getOverclock() {
+    //     console.log("get overclock", this.index)
+    //     const data = {
+    //         gpu_data: [
+    //             {
+    //                 nvidia: {},
+    //                 amd: {},
+    //                 gpus: [
+    //                     {
+    //                         gpu_index: this.index,
+    //                         worker_id: this.worker
+    //                     }
+    //                 ]
+    //             }
+    //         ],
+    //         common_data: this.getCommonData(),
+    //         tweakers: this.getTweakers() 
+    //     };
+
+    //     const oc = this.getOverclockParams();
+    //     console.log("OC params", this.info, oc);
+
+    // }
+
+    
+
     async overclock() {
-        console.log("overclock", this)
+        console.log("overclock", this.index)
         const data = {
             gpu_data: [
                 {
@@ -78,7 +105,7 @@ class GPU {
         console.log("OC params", this.info, oc);
 
         if (oc) {
-            data.gpu_data[this.brand] = oc;
+            data.gpu_data[0][this.brand] = oc;
             const res = await hiveapi.overclockWorker(this.farm, this.worker, data);
             console.log("OC result for", { 
                 worker: this.worker, 

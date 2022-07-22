@@ -410,15 +410,19 @@ const watcher = () => {
           console.log("test key", key, time, now, now-time);
           if (time <= now) {
             console.log("process key", key, "delta", now-time, "sec");
+
+            // increase period
             redis.hget(key, "period", (err, period) => {
               if (!err) {
                 time += 1*period;
                 redis.zadd("watch-workers", time, key);
                 redis.hset(key, "time", time);
                 redis.hset(key, "period", 10);
-
               }
             });
+
+            // watch OC settings of worker
+             
           }
         }  
       });

@@ -1,0 +1,117 @@
+
+  type Worker {
+    id: Int!
+    name: String!
+    active: Boolean
+    ip_addresses: [String!]
+    vpn: Boolean
+    system_type: String,
+    needs_upgrade: Boolean,
+    stats: WorkerStats
+    hardware_info: HardwareInfo
+  #  hardware_stats: {}
+    units_count: Int,
+    # flight_sheet: {}
+    overclock: OverClock
+    miners_summary: MinerHashRate
+    # miners_stats: {}
+    # gpu_summary: {}
+    gpu_stats: [GPUStat!]
+    gpu_info: [GPUInfo!]
+
+
+
+    #gpus: [Board!]
+  }
+
+  type WorkerStats {
+    online: Boolean
+    gpus_online: Int
+    gpus_offline: Int
+    gpus_overheated: Int
+    invalid: Boolean
+    overloaded: Boolean
+    overheated: Boolean
+    problems: [String!]
+  }
+
+
+  type HardwareInfo {
+    motherboard: HardwareMotherboard
+    cpu: HardwareCPU
+    disc: HardwareDisc
+  }
+
+  type HardwareMotherboard {
+    manufacturer: String!
+    model: String!
+    bios: String
+  }
+
+  type HardwareCPU {
+    id: String!
+    model: String!
+    cores: Int!
+    aes: String
+  }
+
+  type HardwareDisc {
+    model: String!
+  }
+
+  input WorkerOCCommonDataAMD {
+    aggressive: Boolean
+  }
+
+  input WorkerOCCommonDataNVidia {
+    data: String
+  }
+
+  input WorkerOCCommonData {
+    amd: WorkerOCCommonDataAMD,
+    nvidia: WorkerOCCommonDataNVidia,
+    worker_ids: [ Int! ]!
+  }
+
+  input WorkerOCTweakersAMD {
+    ref: String
+  }
+  
+  input WorkerOCTweakers {
+    amdmemtweak: WorkerOCTweakersAMD
+  }
+
+  input WorkerOCGPUDataNvidia {
+    power_limit: String
+  }
+  input WorkerOCGPUDataAMD {
+    core_clock: String!
+    mem_clock: String!
+    core_state: String
+    fan_speed: String
+    power_limit: String
+  }
+
+  input WorkerOCGPUDataGPU {
+    gpu_index: Int!
+    worker_id: Int!
+  }
+  input WorkerOCGPUData {
+    nvidia: WorkerOCGPUDataNvidia
+    amd: WorkerOCGPUDataAMD
+    gpus: [ WorkerOCGPUDataGPU! ]!
+    common_data: WorkerOCCommonData
+    tweakers: WorkerOCTweakers
+  }
+
+  input WorkerOC {
+    farm: Int!
+    worker: Int!
+    gpu_data: [ WorkerOCGPUData! ]!
+  }
+
+  input inputWatchWorkerOC {
+    farm: Int!,
+    worker: Int!,
+    period: Int
+  }

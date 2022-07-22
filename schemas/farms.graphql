@@ -1,0 +1,23 @@
+  type Farm {
+    id: Int!
+    name: String!
+    workers_count: Int,
+    rigs_count: Int,
+    asics_count: Int,
+    workers: [Worker!]
+    hashrates_by_coin: [HashRate]
+  }
+
+  type HashRate {
+    miner: String
+    coin: String
+    algo: String
+    hashrate: Int
+    hash: Int
+  }
+
+  type MinerHashRate {
+    hashrates: [HashRate]
+  }
+
+

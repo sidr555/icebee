@@ -68,6 +68,29 @@ class HiveAPI extends RESTDataSource {
         } 
     }
 
+
+    async overclockNvidiaGPU(farm, worker_id, gpu_index, power_limit) {
+        console.log("HiveOS overclock NVidia", farm, worker_id, gpu_index, power_limit);
+
+        const data = {
+            gpu_data: {
+                nvidia: {
+                    power_limit
+                },
+                gpus: [{
+                    gpu_index,
+                    worker_id
+                }]
+            },
+            // common_data: {},
+            // tweakers: {}
+        };
+        const res = await this.post(`/farms/${farm}/workers/overclock`, { data });
+
+        return res.commands[0].commands.length > 0
+    }
+
+
     async overclock_bak({worker, index, amd, nvidia}) {
         amd |= {
             tref_timing: ""

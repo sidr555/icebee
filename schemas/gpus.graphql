@@ -1,0 +1,79 @@
+
+  type OverClock {
+    nvidia: OverClockNvidia
+    amd: OverClockAMD
+    tweakers: Tweakers
+  }
+
+  type OverClockNvidia {
+    # power_limit: String
+    power_limit: [Int]
+  }
+
+  type OverClockAMD {
+    mem_clock: [Int]
+    core_clock: [Int]
+    core_state: [Int]
+    aggressive: Boolean
+  }
+
+  type Tweakers {
+    amdtweaker: [ AmdTweak ]
+  }
+
+  type AmdTweak {
+    ref: String
+  }
+
+  type Board {
+    type: String!
+    slot: Int!
+    worker: Worker
+  }
+
+
+
+  type GPUInfoDetails {
+    mem: String
+    mem_gb: Int
+    mem_type: String
+    mem_oem: String
+    vbios: String
+    subvendor: String
+    oem: String
+  }
+
+  type GPUInfoPowerLimits {
+    min: String
+    def: String
+    max: String
+  }
+
+  type GPUInfo {
+    bus_id: String!
+    bus_number: Int!
+    index: Int
+    brand: String
+    model: String
+    short_name: String
+    details: GPUInfoDetails
+    power_limit: GPUInfoPowerLimits
+  }
+
+  type GPUStat {
+    bus_id: String!
+    bus_number: Int!
+    temp: Int
+    fan: Int
+    hash: Int
+
+    # NVidia specific
+    power: Int
+
+    # AMD specific
+    coreclk: Int
+    memclk: Int
+    core_clock: Int
+    mem_clock: Int
+  }
+
