@@ -69,6 +69,17 @@ const OVERCLOCK_NVIDIA_GPU = gql`
     overclockNvidiaGPU(farm_id: $farm_id, worker_id: $worker_id, gpu_index: $gpu_index, power_limit: $power_limit)
   }
 `
+const OVERCLOCK_NVIDIA_WORKER = gql`
+  mutation overclockWorker($farm: Int!, $worker: Int!, $power_limit: String!) {
+    overclockNvidiaWorker(farm: $farm, worker: $worker, power_limit: $power_limit)
+  }
+`
+
+const OVERCLOCK_AMD_WORKER = gql`
+  mutation overclockWorker($farm: Int!, $worker: Int!, $core_clock: String!, $mem_clock: String!) {
+    overclockAmdWorker(farm: $farm, worker: $worker, core_clock: $core_clock, mem_clock: $mem_clock)
+  }
+`
 
 
 async function checkWorkerOC(farm, worker_id) {
@@ -89,11 +100,10 @@ async function checkWorkerOC(farm, worker_id) {
   });
 
   const worker = res.data.worker;
-
   // console.log("worker data", worker.overclock.nvidia.power_limit[5]);
 
-  
-  const promises = worker.gpu_info.map( gpu => {
+
+  const result = worker.gpu_info.reduce( (res, gpu) => {
     
     const stat = worker.gpu_stats.find(item => item.bus_number === gpu.bus_number);
 
@@ -111,60 +121,92 @@ async function checkWorkerOC(farm, worker_id) {
           oc: worker.overclock
       });
 
-      const oc = board.getOverclockParams();
-      
-      
-      if (oc) {
-
-        // console.log("send mut", {
-        //   farm_id: farm,
-        //   worker_id,
-        //   gpu_index: board.index,
-        //   power_limit: oc.power_limit
-        // });
-
-        return new Promise((resolve, reject) => {
-          client.mutate({
-            mutation: OVERCLOCK_NVIDIA_GPU,
-            variables: {
-              farm_id: farm,
-              worker_id,
-              gpu_index: board.index,
-              power_limit: oc.power_limit
-            }
-          }).then((res) => {
-            if (res.data.overclockNvidiaGPU) {
-              resolve(`GPU OC f:${farm} w:${worker_id} #${board.index} t:${stat.temp} h:${stat.hash} f:${stat.fan} changed power limit to ${oc.power_limit}`)
-            } else {
-              resolve(`GPU OC f:${farm} w:${worker_id} #${board.index} t:${stat.temp} h:${stat.hash} f:${stat.fan} is not changed power limit to ${oc.power_limit}`)
-            }
-          }).catch((err) => {
-            reject(err)
-          });
-        });        
-
-      } else {
-        return new Promise(resolve => resolve(`GPU OC f:${farm} w:${worker_id} #${board.index} t:${stat.temp} h:${stat.hash} f:${stat.fan} is unchanged`))
+      if (board.isCritical()) {
+        res.critical = true;      
       }
-    }
-
-   
-  }, []);
-
-
-  // console.log("start OC cnt ", promises.length);
-  Promise.all(promises).then(results => {
-    // console.log("res cnt", results.length);
-    results.forEach((res, index) => {
-      if (res) {
-        console.log(" - ", res);
-      }
-
-    })
-  }).catch(err => {
-    console.log("mutate err", JSON.stringify(err, null, 2))
-  })
   
+      const params = board.getOverclockParams();
+
+      console.log("oc params", params)
+
+      board.oc_keys.forEach(key => {
+        if (typeof res.oc[key] === "undefined") {
+          res.oc[key] = [];
+        }
+
+        if (params) {
+          // No way to adjust nv + amd workers
+          res.type = board.brand;
+          res.oc[key].push(params[key]);        
+        } else {
+          res.oc[key].push(board.getCurrentOcValue(key));
+        }
+      });
+    }
+    return res;
+
+  
+  }, {
+    type: false, 
+    critical: false, 
+    oc: {}
+  });
+
+
+  console.log("result", result);
+
+  if (result.critical) {
+    console.log(`!!! CRITICAL GPU TEMP ON FARM ${farm} WORKER ${worker_id}. STOP MINER !!!`);  
+  }
+
+  const variables = {
+    farm,
+    worker: worker_id,
+  }
+
+  Object.keys(result.oc).forEach(key => {
+    variables[key] = result.oc[key].join(" ");
+  });
+
+  switch (result.type) {
+    case "nvidia":
+      client.mutate({ 
+        mutation: OVERCLOCK_NVIDIA_WORKER, 
+        variables
+      })
+      .then((res) => {
+        // console.log("res", res)
+        if (res.data.overclockNvidiaWorker) {
+          console.log(`GPU OC f:${farm} w:${worker_id} changed power_limit:${variables.power_limit}`)
+        } else {
+          console.log(`GPU OC f:${farm} w:${worker_id} is not changed power_limit:${variables.power_limit}`)
+        }
+      }).catch((err) => {
+        console.log("mutation error", JSON.stringify(err))
+      });
+
+      break;
+
+    case "amd":
+      // break;
+      client.mutate({ 
+        mutation: OVERCLOCK_AMD_WORKER, 
+        variables
+      })
+      .then((res) => {
+        // console.log("res", JSON.stringify(res))
+        if (res.data.overclockAmdWorker) {
+          console.log(`GPU OC f:${farm} w:${worker_id} changed core_clock:${variables.core_clock} mem_clock:${variables.mem_clock}`)
+        } else {
+          console.log(`GPU OC f:${farm} w:${worker_id} is not changed core_clock:${variables.core_clock} mem_clock:${variables.mem_clock}`)
+        }
+      }).catch((err) => {
+        console.log("mutation error", JSON.stringify(err))
+      });
+      
+      break;
+  }
+
 
 
 }

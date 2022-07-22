@@ -4,7 +4,8 @@ const hiveapi = new HiveAPI();
 
 class GPU {
     temp = {
-        max: 80
+        max: 80,
+        critical: 90
     }
 
     fan = {
@@ -24,6 +25,16 @@ class GPU {
 
         // console.log("worker oc", this.oc);
     }
+
+    getCurrentOcValue(key) {
+        console.log("branf oc", this.brand, this.oc[this.brand])
+        return this.oc[this.brand][key][this.index];
+    }
+
+    isCritical() {
+        return this.stat.temp > this.temp.critical;
+    }
+    
 
     isOverheated() {
         return this.stat.temp > this.temp.max || this.stat.fan > this.fan.max;

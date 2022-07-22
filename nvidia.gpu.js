@@ -3,7 +3,8 @@ const GPU = require("./gpu")
 class NvidiaGPU extends GPU {
 
     temp = {
-        max: 51
+        max: 50,
+        critical: 55
     }
     
     power = {
@@ -15,11 +16,13 @@ class NvidiaGPU extends GPU {
         }
     }
 
+    oc_keys = ["power_limit"]
+
     getOverclockParams() {
         const oc = {}
         const power_limit = this.oc.nvidia.power_limit[this.index];
         if (this.isOverheated()) {
-            console.log(`GPU ${this.index} is overheated ${this.stat.temp} (oc pl: ${power_limit}, stat pl: ${this.stat.power})`);
+            console.log(`GPU (n) w:${this.worker} #${this.index} is overheated ${this.stat.temp} (oc pl: ${power_limit}, stat pl: ${this.stat.power})`);
             if (power_limit > this.power.min) {
                 const power = power_limit - this.power.step.down;
                 oc.power_limit = power >= this.power.min ? power : this.power.min;  

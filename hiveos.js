@@ -91,21 +91,8 @@ class HiveAPI extends RESTDataSource {
     }
 
     async overclockNvidiaWorker(farm, worker, power_limit) {
-        // console.log("HiveOS overclock NVidia", farm, worker_id, gpu_index, power_limit);
+        // console.log("HiveOS overclock NVidia worker", farm, worker, power_limit);
 
-        // const data = {
-        //     worker_ids: [worker_id],
-        //     data: {
-        //         oc_apply_mode: "replace",
-        //         oc_config: {
-        //             default: {
-        //                 nvidia: {
-        //                     power_limit
-        //                 }
-        //             }
-        //         }
-        //     }
-        // };
         const data = {
             // oc_apply_mode: "replace",
             oc_algo: null,
@@ -119,7 +106,7 @@ class HiveAPI extends RESTDataSource {
             }
         };
 
-        console.log("overclockNvidiaWorker params", data.oc_config.default);
+        // console.log("overclockNvidiaWorker params", data.oc_config.default);
 
         try {
             const res = await this.patch(`/farms/${farm}/workers/${worker}`, data);
@@ -133,36 +120,36 @@ class HiveAPI extends RESTDataSource {
     }
 
 
-    async overclock_bak({worker, index, amd, nvidia}) {
-        amd |= {
-            tref_timing: ""
-        }
+    async overclockAmdWorker(farm, worker, core_clock, mem_clock) {
+        console.log("HiveOS overclock AMD worker", farm, worker, core_clock, mem_clock);
 
-        nvidia |= {
-            tref_timing: ""
-        }
-
-        const data = { 
-            "gpu_data": [
-                { 
-                    "gpus": [
-                        { 
-                            "worker_id": worker, 
-                            "gpu_index": index
-                        }
-                    ],
-                    amd,
-                    nvidia
+        const data = {
+            // oc_apply_mode: "replace",
+            oc_algo: null,
+            oc_config: {
+                by_algo: [],
+                default: {
+                    amd: {
+                        core_clock,
+                        mem_clock
+                    }
                 }
-            ], 
-            "common_data": [], 
-            "workerId": worker_id 
+            }
+        };
+
+        // console.log("overclockNvidiaWorker params", data.oc_config.default);
+
+        try {
+            const res = await this.patch(`/farms/${farm}/workers/${worker}`, data);
+            console.log("overclockAMDWorker", res);
+
+            return res.commands.length > 0
+        } catch (err) {
+            console.log("overclockAMDWorker error", JSON.stringify(err))
+            return false;
         }
-
-        console.log("HiveOS overclock", data);
-
-        return this.post(`/farms/${farm}/workers/overclock`, data);
     }
+
 
     async stopMiner(worker) {
         
