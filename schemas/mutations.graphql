@@ -1,6 +1,6 @@
 type Mutation {
   overclockWorker(oc: WorkerOC!): Worker 
   watchWorkerOC(data: inputWatchWorkerOC): Boolean
-  #overclockWorkerResult
-  overclockNvidiaGPU(farm: Int!, worker: Int!, index: Int, power: Int!): Boolean
+  overclockNvidiaGPU(farm_id: Int!, worker_id: Int!, gpu_index: Int, power_limit: Int!): Boolean
+  overclockNvidiaWorker(farm: Int!, worker: Int!, power_limits: String!): Boolean
 }

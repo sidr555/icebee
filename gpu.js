@@ -56,31 +56,7 @@ class GPU {
         return data;
     }
 
-    // async getOverclock() {
-    //     console.log("get overclock", this.index)
-    //     const data = {
-    //         gpu_data: [
-    //             {
-    //                 nvidia: {},
-    //                 amd: {},
-    //                 gpus: [
-    //                     {
-    //                         gpu_index: this.index,
-    //                         worker_id: this.worker
-    //                     }
-    //                 ]
-    //             }
-    //         ],
-    //         common_data: this.getCommonData(),
-    //         tweakers: this.getTweakers() 
-    //     };
 
-    //     const oc = this.getOverclockParams();
-    //     console.log("OC params", this.info, oc);
-
-    // }
-
-    
 
     async overclock() {
         console.log("overclock", this.index)

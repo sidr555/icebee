@@ -12,6 +12,7 @@ const client = new ApolloClient({
 
 
 const Redis = require("ioredis");
+const e = require("express");
 const redis = new Redis();
 
 
@@ -64,9 +65,9 @@ query WorkerQuery ($farm: Int!, $worker: Int!) {
 
 
 const OVERCLOCK_NVIDIA_GPU = gql`
-  mutation OverclockNvidia($farm: Int!, $worker: Int!, $index: Int, $power: Int!) {
-    overclockNvidiaGPU(farm: $farm, worker: $worker, index: $index, power: $power)
-  } 
+  mutation overclockNvidia($farm_id: Int!, $worker_id: Int!, $gpu_index: Int!, $power_limit: Int!) {
+    overclockNvidiaGPU(farm_id: $farm_id, worker_id: $worker_id, gpu_index: $gpu_index, power_limit: $power_limit)
+  }
 `
 
 
@@ -83,24 +84,22 @@ async function checkWorkerOC(farm, worker_id) {
     variables: {
       farm: parseInt(farm),
       worker: parseInt(worker_id)
-    }
+    },
+    fetchPolicy: "network-only"
   });
 
   const worker = res.data.worker;
 
-  // console.log("worker data", worker);
+  // console.log("worker data", worker.overclock.nvidia.power_limit[5]);
 
   
-  // worker.gpu_info.forEach(async gpu => {
-  const request = worker.gpu_info.reduce((req, gpu) => {
+  const promises = worker.gpu_info.map( gpu => {
     
     const stat = worker.gpu_stats.find(item => item.bus_number === gpu.bus_number);
 
-    // console.log("brand", gpu.brand, gpu)
-    // return;
     if (gpu.brand === "amd" || gpu.brand === "nvidia") {
 
-      if (gpu.index !== 5) return req;
+      // if (gpu.index !== 5) return;
 
       const GPUClass = gpu.brand === "amd" ? AmdGPU : NvidiaGPU;
 
@@ -113,98 +112,60 @@ async function checkWorkerOC(farm, worker_id) {
       });
 
       const oc = board.getOverclockParams();
+      
+      
       if (oc) {
 
-        console.log("send mut", {
-          farm,
-          worker: worker_id,
-          index: board.index,
-          power: oc.power_limit
-        });
+        // console.log("send mut", {
+        //   farm_id: farm,
+        //   worker_id,
+        //   gpu_index: board.index,
+        //   power_limit: oc.power_limit
+        // });
 
-        client.mutate({
-          mutation: OVERCLOCK_NVIDIA_GPU,
-          variables: {
-            farm,
-            worker: worker_id,
-            index: board.index,
-            power: oc.power_limit
-          }
-        }).then(res => {
-          console.log("mutate res", res)
-        }).catch(err => {
-          console.log("mutate err", err)
-        })
+        return new Promise((resolve, reject) => {
+          client.mutate({
+            mutation: OVERCLOCK_NVIDIA_GPU,
+            variables: {
+              farm_id: farm,
+              worker_id,
+              gpu_index: board.index,
+              power_limit: oc.power_limit
+            }
+          }).then((res) => {
+            if (res.data.overclockNvidiaGPU) {
+              resolve(`GPU OC f:${farm} w:${worker_id} #${board.index} t:${stat.temp} h:${stat.hash} f:${stat.fan} changed power limit to ${oc.power_limit}`)
+            } else {
+              resolve(`GPU OC f:${farm} w:${worker_id} #${board.index} t:${stat.temp} h:${stat.hash} f:${stat.fan} is not changed power limit to ${oc.power_limit}`)
+            }
+          }).catch((err) => {
+            reject(err)
+          });
+        });        
 
-        // const item = {
-        //     // nvidia: {},
-        //     // amd: {},
-        //     gpus: [
-        //         {
-        //             gpu_index: board.index,
-        //             worker_id
-        //         }
-        //     ]
-        // }
-
-        // item[board.brand] = oc;
-
-        // req.gpu_data.push(item);
+      } else {
+        return new Promise(resolve => resolve(`GPU OC f:${farm} w:${worker_id} #${board.index} t:${stat.temp} h:${stat.hash} f:${stat.fan} is unchanged`))
       }
-
-//       req.common_data[board.brand] = board.getCommonDataParams();
-//  //     Object.assign(req.common_data.tweakers, board.getTweakers());
-//       req.tweakers = board.getTweakers()
-
     }
 
-    return req;
-
-    // if (gpu.brand === "amd") {
-    //     board = new AmdGPU(farm, worker.id, gpu, stat, worker.overclock, hiveapi);
-    // } else if (gpu.brand === "nvidia") {
-    //     board = new NvidiaGPU(farm, worker.id, gpu, stat, worker.overclock, hiveapi);
-    // } else {
-    //     return;
-    // }
-
-    //const gpu = new GPU(worker, gpu, stat);
+   
+  }, []);
 
 
+  // console.log("start OC cnt ", promises.length);
+  Promise.all(promises).then(results => {
+    // console.log("res cnt", results.length);
+    results.forEach((res, index) => {
+      if (res) {
+        console.log(" - ", res);
+      }
 
-
-
-    // const oc = await board.overclock();
-    // if (oc) {
-    //     console.log("GPU overclock is changed");
-    // } else if (board.isOverheated()) {
-    //     console.log("GPU cannot been overclocked but it is very HOT! You must fix it yourself");
-    // } else {
-
-    // }
-
-  }, {
-    gpu_data: [], 
-    common_data: {
-      // amd: {},
-      // nvidia: {},
-      worker_ids: [ worker_id ]
-    },
-    tweakers: {}
-  });
-
-  return;
-  console.log("res arr", request.gpu_data);
-
-  if (request.gpu_data && request.gpu_data.length) {
-
-    console.log(JSON.stringify(request));
-
-
-
-    // console.log(gql(JSON.stringify(request)));
-  }
+    })
+  }).catch(err => {
+    console.log("mutate err", JSON.stringify(err, null, 2))
+  })
   
+
 
 }
 
@@ -226,15 +187,16 @@ const watcher = () => {
           if (time <= now) {
             const [_, os, farm, worker] = key.split(":");
             
-            checkWorkerOC(farm, worker);
+            checkWorkerOC(parseInt(farm), parseInt(worker));
 
             // increase period
             redis.hget(key, "period", (err, period) => {
               if (!err) {
-                time += 1*period;
+                time = now + parseInt(period);
                 redis.zadd("watch-workers", time, key);
                 redis.hset(key, "time", time);
-                redis.hset(key, "period", 10);
+                // redis.hset(key, "period", 60);
+                // console.log("increase watch time", farm, worker)
               }
             });
 

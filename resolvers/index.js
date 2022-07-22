@@ -99,14 +99,21 @@ const resolvers = {
         //return workers.data;
       },
 
-      async overclockNvidiaGPU(parent, { farm, worker, index, power }, { dataSources }) {
-        console.log("MUT overclockWorker", { farm, worker, index, power });
-        const res = await dataSources.hiveAPI.overclockNvidiaGPU(farm, worker, index, power);
-        console.log("MUT overclockNvidia res", res);
+      async overclockNvidiaGPU(parent, { farm_id, worker_id, gpu_index, power_limit }, { dataSources }) {
+        // console.log("MUT overclockWorker", { farm_id, worker_id, gpu_index, power_limit });
+        const res = await dataSources.hiveAPI.overclockNvidiaGPU(farm_id, worker_id, gpu_index, power_limit);
+        console.log(`MUT overclockNvidia f:${farm_id} w:${worker_id} #${gpu_index} pow:${power_limit} :`, res);
         return res;
   
         //workers.data.forEach( worker => convertOverclock(worker));
         //return workers.data;
+      },
+
+      async overclockNvidiaWorker(parent, {farm, worker, power_limits}, { dataSources }) {
+        const res = await dataSources.hiveAPI.overclockNvidiaWorker( farm, worker, power_limits);
+        console.log(`MUT overclockNvidiaWorker f:${farm} w:${worker} pow:${power_limits} :`, res);
+        return res;
+
       },
   
   

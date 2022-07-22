@@ -70,7 +70,7 @@ class HiveAPI extends RESTDataSource {
 
 
     async overclockNvidiaGPU(farm, worker_id, gpu_index, power_limit) {
-        console.log("HiveOS overclock NVidia", farm, worker_id, gpu_index, power_limit);
+        // console.log("HiveOS overclock NVidia", farm, worker_id, gpu_index, power_limit);
 
         const data = {
             gpu_data: {
@@ -88,6 +88,48 @@ class HiveAPI extends RESTDataSource {
         const res = await this.post(`/farms/${farm}/workers/overclock`, { data });
 
         return res.commands[0].commands.length > 0
+    }
+
+    async overclockNvidiaWorker(farm, worker, power_limit) {
+        // console.log("HiveOS overclock NVidia", farm, worker_id, gpu_index, power_limit);
+
+        // const data = {
+        //     worker_ids: [worker_id],
+        //     data: {
+        //         oc_apply_mode: "replace",
+        //         oc_config: {
+        //             default: {
+        //                 nvidia: {
+        //                     power_limit
+        //                 }
+        //             }
+        //         }
+        //     }
+        // };
+        const data = {
+            // oc_apply_mode: "replace",
+            oc_algo: null,
+            oc_config: {
+                by_algo: [],
+                default: {
+                    nvidia: {
+                        power_limit
+                    }
+                }
+            }
+        };
+
+        console.log("overclockNvidiaWorker params", data.oc_config.default);
+
+        try {
+            const res = await this.patch(`/farms/${farm}/workers/${worker}`, data);
+            console.log("overclockNvidiaWorker", res);
+
+            return res.commands.length > 0
+        } catch (err) {
+            console.log("overclockNvidiaWorker error", JSON.stringify(err))
+            return false;
+        }
     }
 
 
