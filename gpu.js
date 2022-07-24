@@ -5,11 +5,12 @@ const hiveapi = new HiveAPI();
 class GPU {
     temp = {
         max: 80,
+        good: 70,
         critical: 90
     }
 
     fan = {
-        max: 75
+        max: 90
     }
 
 
@@ -27,17 +28,22 @@ class GPU {
     }
 
     getCurrentOcValue(key) {
-        console.log("branf oc", this.brand, this.oc[this.brand])
+        // console.log("branf oc", this.brand, this.oc[this.brand])
         return this.oc[this.brand][key][this.index];
     }
 
     isCritical() {
-        return this.stat.temp > this.temp.critical;
+        return this.stat.temp >= this.temp.critical;
     }
     
 
     isOverheated() {
-        return this.stat.temp > this.temp.max || this.stat.fan > this.fan.max;
+        return this.stat.temp >= this.temp.max || this.stat.fan >= this.fan.max;
+    }
+    
+    isGood() {
+
+        return Math.abs(this.stat.temp - this.temp.good) < 1 && this.stat.fan < this.fan.max;
     }
     
     canOverclock() {

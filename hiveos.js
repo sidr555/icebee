@@ -120,8 +120,8 @@ class HiveAPI extends RESTDataSource {
     }
 
 
-    async overclockAmdWorker(farm, worker, core_clock, mem_clock) {
-        console.log("HiveOS overclock AMD worker", farm, worker, core_clock, mem_clock);
+    async overclockAmdWorker(farm, worker, core_clock, core_state, mem_clock, gpus) {
+        console.log("HiveOS overclock AMD worker", farm, worker, core_clock, core_state, mem_clock, gpus);
 
         const data = {
             // oc_apply_mode: "replace",
@@ -131,7 +131,18 @@ class HiveAPI extends RESTDataSource {
                 default: {
                     amd: {
                         core_clock,
-                        mem_clock
+                        core_state,
+                        mem_clock,
+                        aggressive: true
+                    },
+                    tweakers: {
+                        amdmemtweak: [{
+                            gpus,
+                            // gpus: gpus.split(","),
+                            params: {
+                                ref: 30
+                            }
+                        }]
                     }
                 }
             }

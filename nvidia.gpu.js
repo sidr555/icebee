@@ -3,13 +3,14 @@ const GPU = require("./gpu")
 class NvidiaGPU extends GPU {
 
     temp = {
+        good: 49,
         max: 50,
         critical: 55
     }
     
     power = {
-        max: 80,
-        min: 60,
+        max: 85,
+        min: 55,
         step: {
             up: 2,
             down: 4
@@ -30,6 +31,8 @@ class NvidiaGPU extends GPU {
                 // console.log("Cannot power down nvidia GPU", this.info);
                 return false;
             }
+        } else if (this.isGood()) {
+            return false;
         } else {
             // return false;
             if (power_limit < this.power.max) {

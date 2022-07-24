@@ -116,9 +116,9 @@ const resolvers = {
       },
   
   
-      async overclockAmdWorker(parent, {farm, worker, core_clock, mem_clock }, { dataSources }) {
-        const res = await dataSources.hiveAPI.overclockAmdWorker( farm, worker, core_clock, mem_clock);
-        console.log(`MUT overclockAmdWorker f:${farm} w:${worker} core:${core_clock} mem:${mem_clock}:`, res);
+      async overclockAmdWorker(parent, {farm, worker, core_clock, core_state, mem_clock, gpus }, { dataSources }) {
+        const res = await dataSources.hiveAPI.overclockAmdWorker( farm, worker, core_clock, core_state, mem_clock, gpus);
+        console.log(`MUT overclockAmdWorker f:${farm} w:${worker} gpus:${gpus} core:${core_clock} mem:${mem_clock}:`, res);
         return res;
       },
   

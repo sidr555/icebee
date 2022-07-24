@@ -3,5 +3,5 @@ type Mutation {
   watchWorkerOC(data: inputWatchWorkerOC): Boolean
   overclockNvidiaGPU(farm_id: Int!, worker_id: Int!, gpu_index: Int, power_limit: Int!): Boolean
   overclockNvidiaWorker(farm: Int!, worker: Int!, power_limit: String!): Boolean
-  overclockAmdWorker(farm: Int!, worker: Int!, core_clock: String!, mem_clock: String!): Boolean
+  overclockAmdWorker(farm: Int!, worker: Int!, core_clock: String!, core_state: String!, mem_clock: String!, gpus: String!): Boolean
 }

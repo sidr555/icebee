@@ -2,17 +2,18 @@ const GPU = require("./gpu")
 
 class AmdGPU extends GPU {
     temp = {
+        good: 56,
         max: 57,
         critical: 62
     }
     
-    oc_keys = ["core_clock", "mem_clock"]
+    oc_keys = ["core_clock", "core_state", "mem_clock"]
 
     core_clock = {
         min: 600,
         max: 1200,
         step: {
-            up: 50,
+            up: 25,
             down: 100
         }
     }
@@ -20,12 +21,12 @@ class AmdGPU extends GPU {
         min: 1600,
         max: 2200,
         step: {
-            up: 50,
-            down: 200
+            up: 25,
+            down: 100
         }
     }
 
-    oc_keys = ["core_clock", "mem_clock"];
+    oc_keys = ["core_clock", "mem_clock", "core_state"];
     
     getCommonDataParams() {
         return {
@@ -49,23 +50,40 @@ class AmdGPU extends GPU {
         //     // power_limit: this.oc.amd.power_limit ? this.oc.amd.power_limit[this.index] : null
         // }
 
-        const oc = {}
         let core_clock = this.oc.amd.core_clock[this.index];
         let mem_clock = this.oc.amd.mem_clock[this.index];
 
-        oc.mem_clock = mem_clock;
+        const oc = {
+            core_clock,
+            core_state: this.oc.amd.core_state[this.index],
+            mem_clock
+        };
 
         if (this.isOverheated()) {
             console.log(`GPU (a) w:${this.worker} #${this.index} is overheated ${this.stat.temp} (core_clock: ${core_clock}, mem_clock: ${mem_clock}, power: ${this.stat.power})`);
+            // if (core_clock > this.core_clock.min) {
+            //     core_clock -= this.core_clock.step.down;
+            //     oc.core_clock = core_clock >= this.core_clock.min ? core_clock : this.core_clock.min; 
             if (core_clock > this.core_clock.min) {
                 core_clock -= this.core_clock.step.down;
                 oc.core_clock = core_clock >= this.core_clock.min ? core_clock : this.core_clock.min; 
+            } else if (mem_clock > this.mem_clock.min) {
+                mem_clock -= this.mem_clock.step.down;
+                oc.mem_clock = mem_clock >= this.mem_clock.min ? mem_clock : this.mem_clock.min; 
             } else {
                 console.log("Cannot power down amd GPU", this.info);
                 return false;
             }
+        } else if (this.isGood()) {
+            return false;
         } else {
-            if (core_clock < this.core_clock.max) {
+            // if (core_clock < this.core_clock.max) {
+            //     core_clock += this.core_clock.step.up;
+            //     oc.core_clock = core_clock <= this.core_clock.max ? core_clock : this.core_clock.max;  
+            if (mem_clock < this.mem_clock.max) {
+                mem_clock += this.mem_clock.step.up;
+                oc.mem_clock = mem_clock <= this.mem_clock.max ? mem_clock : this.mem_clock.max;  
+            } else if (core_clock < this.core_clock.max) {
                 core_clock += this.core_clock.step.up;
                 oc.core_clock = core_clock <= this.core_clock.max ? core_clock : this.core_clock.max;  
             } else {

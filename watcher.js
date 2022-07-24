@@ -44,6 +44,7 @@ query WorkerQuery ($farm: Int!, $worker: Int!) {
         amd {
           mem_clock
           core_clock
+          core_state
         }
         tweakers {
           amdtweaker {
@@ -76,8 +77,8 @@ const OVERCLOCK_NVIDIA_WORKER = gql`
 `
 
 const OVERCLOCK_AMD_WORKER = gql`
-  mutation overclockWorker($farm: Int!, $worker: Int!, $core_clock: String!, $mem_clock: String!) {
-    overclockAmdWorker(farm: $farm, worker: $worker, core_clock: $core_clock, mem_clock: $mem_clock)
+  mutation overclockWorker($farm: Int!, $worker: Int!, $core_clock: String!, $core_state: String!, $mem_clock: String!, $gpus: String!) {
+    overclockAmdWorker(farm: $farm, worker: $worker, core_clock: $core_clock, core_state: $core_state, mem_clock: $mem_clock, gpus: $gpus)
   }
 `
 
@@ -127,7 +128,7 @@ async function checkWorkerOC(farm, worker_id) {
   
       const params = board.getOverclockParams();
 
-      console.log("oc params", params)
+      // console.log("oc params", params)
 
       board.oc_keys.forEach(key => {
         if (typeof res.oc[key] === "undefined") {
@@ -153,7 +154,7 @@ async function checkWorkerOC(farm, worker_id) {
   });
 
 
-  console.log("result", result);
+  // console.log("result", result);
 
   if (result.critical) {
     console.log(`!!! CRITICAL GPU TEMP ON FARM ${farm} WORKER ${worker_id}. STOP MINER !!!`);  
@@ -168,45 +169,50 @@ async function checkWorkerOC(farm, worker_id) {
     variables[key] = result.oc[key].join(" ");
   });
 
-  switch (result.type) {
-    case "nvidia":
-      client.mutate({ 
-        mutation: OVERCLOCK_NVIDIA_WORKER, 
-        variables
-      })
-      .then((res) => {
-        // console.log("res", res)
-        if (res.data.overclockNvidiaWorker) {
-          console.log(`GPU OC f:${farm} w:${worker_id} changed power_limit:${variables.power_limit}`)
-        } else {
-          console.log(`GPU OC f:${farm} w:${worker_id} is not changed power_limit:${variables.power_limit}`)
-        }
-      }).catch((err) => {
-        console.log("mutation error", JSON.stringify(err))
-      });
+  try {
+    switch (result.type) {
+      case "nvidia":
+        client.mutate({ 
+          mutation: OVERCLOCK_NVIDIA_WORKER, 
+          variables
+        })
+        .then((res) => {
+          // console.log("res", res)
+          if (res.data.overclockNvidiaWorker) {
+            console.log(`GPU OC f:${farm} w:${worker.name} changed power_limit:${variables.power_limit}`)
+          } else {
+            console.log(`GPU OC f:${farm} w:${worker.name} is not changed power_limit:${variables.power_limit}`)
+          }
+        }).catch((err) => {
+          console.log("mutation error", JSON.stringify(err))
+        });
 
-      break;
+        break;
 
-    case "amd":
-      // break;
-      client.mutate({ 
-        mutation: OVERCLOCK_AMD_WORKER, 
-        variables
-      })
-      .then((res) => {
-        // console.log("res", JSON.stringify(res))
-        if (res.data.overclockAmdWorker) {
-          console.log(`GPU OC f:${farm} w:${worker_id} changed core_clock:${variables.core_clock} mem_clock:${variables.mem_clock}`)
-        } else {
-          console.log(`GPU OC f:${farm} w:${worker_id} is not changed core_clock:${variables.core_clock} mem_clock:${variables.mem_clock}`)
-        }
-      }).catch((err) => {
-        console.log("mutation error", JSON.stringify(err))
-      });
-      
-      break;
+      case "amd":
+        variables.gpus = result.oc.core_clock.map( (val, i) => i ).join(","); 
+        // console.log("variables", variables);
+        // break;
+        client.mutate({ 
+          mutation: OVERCLOCK_AMD_WORKER, 
+          variables
+        })
+        .then((res) => {
+          // console.log("res", JSON.stringify(res))
+          if (res.data.overclockAmdWorker) {
+            console.log(`GPU OC f:${farm} w:${worker.name} gpus:${variables.gpus} changed core_clock:${variables.core_clock} mem_clock:${variables.mem_clock}`)
+          } else {
+            console.log(`GPU OC f:${farm} w:${worker.name} is not changed core_clock:${variables.core_clock} mem_clock:${variables.mem_clock}`)
+          }
+        }).catch((err) => {
+          console.log("mutation error", JSON.stringify(err))
+        });
+        
+        break;
+    }
+  } catch (err) {
+    console.log("worker mutation error", JSON.stringify(err))
   }
-
 
 
 }
