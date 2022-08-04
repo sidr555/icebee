@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "experimentalDecorators": true,
+    "paths": {
+      "@sub/*": ["sub/*"],
+      "@subComp/*": ["sub/component/*"],
+      "@subCon/*": ["sub/container/*"],
+      "@subStore/*": ["sub/store/*"],
+      "@subScss/*": ["sub/scss/*"],
+      "@subStyled/*": ["sub/styled/*"],
+      "@subApi/*": ["sub/api/*"],
+      "@subCore/*": ["sub/core/*"],
+      "@subTool/*": ["sub/tool/*"],
+      "@subService/*": ["sub/service/*"],
+      "@subStatic/*": ["sub/static/*"],
+      "@/*": ["src/*"],
+      "@src/*": ["src/*"],
+      "@comp/*": ["src/component/*"],
+      "@con/*": ["src/container/*"],
+      "@store/*": ["src/store/*"],
+      "@scss/*": ["src/scss/*"],
+      "@styled/*": ["src/styled/*"],
+      "@api/*": ["src/api/*"],
+      "@core/*": ["src/core/*"],
+      "@tool/*": ["src/tool/*"],
+      "@service/*": ["src/service/*"],
+      "@types/*": ["src/types/*"],
+      "@test/*": ["src/test/*"],
+      "@static/*": ["src/static/*"],
+      "@server/*": ["server/*"]
+    }
+  },
+  "include": [
+    "src",
+    "sub",
+    "server"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "public",
+    "dist"
+  ]
+}

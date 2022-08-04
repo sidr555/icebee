@@ -1,0 +1,9 @@
+node_modules
+build
+dist
+LICENSE
+README.md
+
+*.json
+*.png
+*.ico

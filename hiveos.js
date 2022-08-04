@@ -34,8 +34,14 @@ class HiveAPI extends RESTDataSource {
     // }
 
     getFarms() {
-        return this.get('/farms')
-        // .then( res => {
+        try {
+            return this.get('/farms')
+        } catch (err) {
+            console.log("Error [HiveOS] getFarms", JSON.stringify(err))
+            return false;
+        }
+
+            // .then( res => {
         //     console.log("farm RESS", res.data);
         // }).catch( e => {
         //     if (e.extensions.code === "UNAUTHENTICATED") {
@@ -46,28 +52,43 @@ class HiveAPI extends RESTDataSource {
     }
 
     getWorkers({ farm }) {
-        return this.get(`/farms/${farm}/workers`)
+        try {
+            return this.get(`/farms/${farm}/workers`)
+        } catch (err) {
+            console.log("Error [HiveOS] getWorkers", JSON.stringify(err))
+            return false;
+        }
     }
 
     getWorker({ farm, worker }) {
-        return this.get(`/farms/${farm}/workers/${worker}`)
+        try {
+            return this.get(`/farms/${farm}/workers/${worker}`)
+        } catch (err) {
+            console.log("Error [HiveOS] getWorker", JSON.stringify(err))
+            return false;
+        }
     }
 
     async overclockWorker(farm, worker, gpu_data ) {
         console.log("HiveOS overclock", farm, worker, gpu_data);
-        const res = await this.post(`/farms/${farm}/workers/overclock`, { gpu_data });
-
-        // console.log("HiveOS overclock res", res.commands[0].commands);
-        console.log("HiveOS overclock res", res.length);
         
-        if (res.commands && res.commands.length) {
-            const workerUpdated = await this.getWorker({ farm, worker });
-            console.log("overclock worker up", workerUpdated)
-        // } else {
-            // return;
-        } 
-    }
+        try {
+            const res = await this.post(`/farms/${farm}/workers/overclock`, { gpu_data });
 
+            // console.log("HiveOS overclock res", res.commands[0].commands);
+            console.log("HiveOS overclock res", res.length);
+            
+            if (res.commands && res.commands.length) {
+                const workerUpdated = await this.getWorker({ farm, worker });
+                console.log("overclock worker up", workerUpdated)
+            // } else {
+                // return;
+            } 
+        } catch (err) {
+            console.log("Error [HiveOS] overclockWorker", JSON.stringify(err))
+            return false;
+        }
+    }
 
     async overclockNvidiaGPU(farm, worker_id, gpu_index, power_limit) {
         // console.log("HiveOS overclock NVidia", farm, worker_id, gpu_index, power_limit);
@@ -85,9 +106,16 @@ class HiveAPI extends RESTDataSource {
             // common_data: {},
             // tweakers: {}
         };
-        const res = await this.post(`/farms/${farm}/workers/overclock`, { data });
 
-        return res.commands[0].commands.length > 0
+        try {
+            const res = await this.post(`/farms/${farm}/workers/overclock`, { data });
+
+            return res.commands[0].commands.length > 0
+
+        } catch (err) {
+            console.log("Error [HiveOS] overclockNvidiaGPU", JSON.stringify(err))
+            return false
+        }
     }
 
     async overclockNvidiaWorker(farm, worker, power_limit) {
@@ -114,8 +142,8 @@ class HiveAPI extends RESTDataSource {
 
             return res.commands.length > 0
         } catch (err) {
-            console.log("overclockNvidiaWorker error", JSON.stringify(err))
-            return false;
+            console.log("Error [HiveOS] overclockAmdGPU", JSON.stringify(err))
+            return false
         }
     }
 
@@ -156,8 +184,8 @@ class HiveAPI extends RESTDataSource {
 
             return res.commands.length > 0
         } catch (err) {
-            console.log("overclockAMDWorker error", JSON.stringify(err))
-            return false;
+            console.log("Error [HiveOS] overclockAmdWorker", JSON.stringify(err))
+            return false
         }
     }
 

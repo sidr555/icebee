@@ -3,6 +3,8 @@
     id: Int!
     name: String!
     active: Boolean
+    oc_algo: String
+    oc_algo_actual: String
     ip_addresses: [String!]
     vpn: Boolean
     system_type: String,

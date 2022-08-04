@@ -25,6 +25,9 @@ query WorkerQuery ($farm: Int!, $worker: Int!) {
     worker(farm: $farm, worker: $worker) {
       id
       name
+      active
+      oc_algo
+      oc_algo_actual
       gpu_stats {
         bus_number
         temp
@@ -102,7 +105,19 @@ async function checkWorkerOC(farm, worker_id) {
 
   const worker = res.data.worker;
   // console.log("worker data", worker.overclock.nvidia.power_limit[5]);
-
+  
+  const hrate = worker.gpu_stats.reduce( (res, stat) => res + stat.hash, 0);
+  // console.log("worker data", worker, hrate);
+  
+  if (!hrate) {
+    console.log(`Skip worker ${worker.name}`);
+    return;
+  }
+  
+  if (worker.gpu_stats === null) {
+    console.log(`${worker.name} is offline`)
+    return false;  
+  }
 
   const result = worker.gpu_info.reduce( (res, gpu) => {
     
@@ -220,45 +235,58 @@ async function checkWorkerOC(farm, worker_id) {
 
 
 const watcher = () => {
-  redis.zrange("watch-workers", 0, 10, (err, res) => {
-    if (err) {
-      console.log("watcher error", err);
-      return false;
-    }
+  try {
+    redis.zrange("watch-workers", 0, 10, (err, res) => {
+      if (err) {
+        console.log("watcher error", err);
+        return false;
+      }
 
-    const now = parseInt(Date.now()/1000);
-    res.forEach(key => {
-      redis.hget(key, "time", (err, timeStr) => {
-        if (!err && timeStr) {
-          let time = parseInt(timeStr);
-          // console.log("test key", key, time, now, now-time);
-          if (time <= now) {
-            const [_, os, farm, worker] = key.split(":");
-            
-            checkWorkerOC(parseInt(farm), parseInt(worker));
+      const now = parseInt(Date.now()/1000);
+      res.forEach(key => {
+        redis.hget(key, "time", (err, timeStr) => {
+          if (!err && timeStr) {
+            let time = parseInt(timeStr);
+            // console.log("test key", key, time, now, now-time);
+            if (time <= now) {
+              const [_, os, farm, worker] = key.split(":");
 
-            // increase period
-            redis.hget(key, "period", (err, period) => {
-              if (!err) {
-                time = now + parseInt(period);
-                redis.zadd("watch-workers", time, key);
-                redis.hset(key, "time", time);
-                // redis.hset(key, "period", 60);
-                // console.log("increase watch time", farm, worker)
-              }
-            });
+              try {
 
-            // watch OC settings of worker
-             
-          }
-        }  
+                // if (worker != "4857668") return; // nv1 only
+                // if (worker != "4946076") return;
+              
+                // console.log("WATCH ", worker);
+                checkWorkerOC(parseInt(farm), parseInt(worker));
+                // increase period
+                redis.hget(key, "period", (err, period) => {
+                  if (!err) {
+                    time = now + parseInt(period);
+                    redis.zadd("watch-workers", time, key);
+                    redis.hset(key, "time", time);
+                    // redis.hset(key, "period", 60);
+                    // console.log("increase watch time", farm, worker)
+                  }
+                });
+
+              } catch(err) {
+                console.log("ERROR [watcher]", JSON.stringify(err));
+              }  
+              
+            }
+          }  
+        });
       });
-    });
 
 
-    // console.log("watcher res", res.length, res);
+      // console.log("watcher res", res.length, res);
 
-  })
+    })
+  } catch (err) {
+    console.log("ERROR [watcher 2]", err);
+  }
 }
+
+console.log("### KeenBee watcher started ###")
 
 setInterval(watcher, 2000);

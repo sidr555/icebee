@@ -1,32 +1,44 @@
 const GPU = require("./gpu")
 
 class AmdGPU extends GPU {
-    temp = {
-        good: 56,
-        max: 57,
-        critical: 62
+
+    defaultConfig = {
+        temp: {
+            good: 56,
+            max: 57,
+            critical: 62
+        },
+        fan: {
+            max: 90
+        },
+        core_clock: {
+            min: 600,
+            max: 1200,
+            step: {
+                up: 25,
+                down: 100
+            }
+        },
+        mem_clock: {
+            min: 1600,
+            max: 2200,
+            step: {
+                up: 25,
+                down: 100
+            }
+        }
+        
     }
-    
+
     oc_keys = ["core_clock", "core_state", "mem_clock"]
 
-    core_clock = {
-        min: 600,
-        max: 1200,
-        step: {
-            up: 25,
-            down: 100
-        }
-    }
-    mem_clock = {
-        min: 1600,
-        max: 2200,
-        step: {
-            up: 25,
-            down: 100
-        }
-    }
+    constructor(params) {
+        super(params);
 
-    oc_keys = ["core_clock", "mem_clock", "core_state"];
+        this.config = this.defaultConfig;
+
+        // console.log("amd", this.config);
+    }
     
     getCommonDataParams() {
         return {
@@ -64,12 +76,12 @@ class AmdGPU extends GPU {
             // if (core_clock > this.core_clock.min) {
             //     core_clock -= this.core_clock.step.down;
             //     oc.core_clock = core_clock >= this.core_clock.min ? core_clock : this.core_clock.min; 
-            if (core_clock > this.core_clock.min) {
-                core_clock -= this.core_clock.step.down;
-                oc.core_clock = core_clock >= this.core_clock.min ? core_clock : this.core_clock.min; 
+            if (core_clock > this.config.core_clock.min) {
+                core_clock -= this.config.core_clock.step.down;
+                oc.core_clock = core_clock >= this.config.core_clock.min ? core_clock : this.config.core_clock.min; 
             } else if (mem_clock > this.mem_clock.min) {
-                mem_clock -= this.mem_clock.step.down;
-                oc.mem_clock = mem_clock >= this.mem_clock.min ? mem_clock : this.mem_clock.min; 
+                mem_clock -= this.config.mem_clock.step.down;
+                oc.mem_clock = mem_clock >= this.config.mem_clock.min ? mem_clock : this.config.mem_clock.min; 
             } else {
                 console.log("Cannot power down amd GPU", this.info);
                 return false;
@@ -80,12 +92,13 @@ class AmdGPU extends GPU {
             // if (core_clock < this.core_clock.max) {
             //     core_clock += this.core_clock.step.up;
             //     oc.core_clock = core_clock <= this.core_clock.max ? core_clock : this.core_clock.max;  
-            if (mem_clock < this.mem_clock.max) {
-                mem_clock += this.mem_clock.step.up;
-                oc.mem_clock = mem_clock <= this.mem_clock.max ? mem_clock : this.mem_clock.max;  
-            } else if (core_clock < this.core_clock.max) {
-                core_clock += this.core_clock.step.up;
-                oc.core_clock = core_clock <= this.core_clock.max ? core_clock : this.core_clock.max;  
+
+            if (mem_clock < this.config.mem_clock.max) {
+                mem_clock += this.config.mem_clock.step.up;
+                oc.mem_clock = mem_clock <= this.config.mem_clock.max ? mem_clock : this.config.mem_clock.max;  
+            } else if (core_clock < this.config.core_clock.max) {
+                core_clock += this.config.core_clock.step.up;
+                oc.core_clock = core_clock <= this.config.core_clock.max ? core_clock : this.config.core_clock.max;  
             } else {
                 console.log("Cannot power up amd GPU", this.info);
                 return false;
@@ -93,6 +106,7 @@ class AmdGPU extends GPU {
         }
 
         // oc.mem_clock = this.stat.memclk;
+        // console.log(`gpu #${this.index} can be overclocked`, oc)
 
         return oc;
     }

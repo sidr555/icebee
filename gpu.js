@@ -1,16 +1,21 @@
 const HiveAPI = require("./hiveos");
 const hiveapi = new HiveAPI();
 
+const Redis = require("ioredis")
+const redis = new Redis();
+
 
 class GPU {
-    temp = {
-        max: 80,
-        good: 70,
-        critical: 90
-    }
+    defaultConfig = {
+        temp: {
+            max: 80,
+            good: 70,
+            critical: 90
+        },
 
-    fan = {
-        max: 90
+        fan: {
+            max: 90
+        }
     }
 
 
@@ -24,7 +29,67 @@ class GPU {
         this.oc = oc
         this.index = info.index
 
+        // this.config = this.getConfig();
+        // this.config = this.defaultConfig;
+        // console.log("conf", this.config);
+
         // console.log("worker oc", this.oc);
+        // this.init();
+        try {
+            this.config = this.getConfig() || this.getWorkerConfig() || this.getFarmConfig() || this.defaultConfig;
+        } catch( err) {
+            this.config = this.defaultConfig;
+        }
+
+    }
+
+    init() {
+        try {
+            this.config = this.getConfig() || this.getWorkerConfig() || this.getFarmConfig() || this.defaultConfig;
+        } catch( err) {
+            this.config = this.defaultConfig;
+        }
+    }
+
+    async getConfig() {
+        return await redis.hget(`hiveos:${this.farm}:${this.worker}:${this.index}`, "config");
+
+        // try {
+        //     this.config = await redis.hget(`hiveos:${this.farm}:${this.worker}:${this.index}`, "config");
+        //     if (this.config) {
+        //         return this.config;
+        //     }
+        //     // if (config) {
+        //     //     return config;
+        //     // }
+        // } catch (err) {} 
+
+        // return await this.getWorkerConfig();
+    }
+
+    async getWorkerConfig() {
+        return await redis.hget(`hiveos:${this.farm}:${this.worker}`, "config");
+        // try {
+        //     const config = await redis.hget(`hiveos:${this.farm}:${this.worker}`, "config");
+        //     if (config) {
+        //         return config;
+        //     }
+        // } catch (err) {} 
+
+        // return await this.getFarmConfig();        
+
+    }
+
+    async getFarmConfig() {
+        return await redis.hget(`hiveos:${this.farm}`, "config");
+        // try {
+        //     const config = await redis.hget(`hiveos:${this.farm}`, "config");
+        //     if (config) {
+        //         return config;
+        //     }
+        // } catch (err) {} 
+
+        // return this.defaultConfig;
     }
 
     getCurrentOcValue(key) {
@@ -33,17 +98,18 @@ class GPU {
     }
 
     isCritical() {
-        return this.stat.temp >= this.temp.critical;
+        return this.stat.temp >= this.config.temp.critical;
     }
     
 
     isOverheated() {
-        return this.stat.temp >= this.temp.max || this.stat.fan >= this.fan.max;
+        // return true
+        return this.stat.temp >= this.config.temp.max || this.stat.fan >= this.config.fan.max;
     }
     
     isGood() {
 
-        return Math.abs(this.stat.temp - this.temp.good) < 1 && this.stat.fan < this.fan.max;
+        return Math.abs(this.stat.temp - this.config.temp.good) < 1 && this.stat.fan < this.config.fan.max;
     }
     
     canOverclock() {
@@ -95,7 +161,7 @@ class GPU {
         };
 
         const oc = this.getOverclockParams();
-        console.log("OC params", this.info, oc);
+        // console.log("OC params", this.info, oc);
 
         if (oc) {
             data.gpu_data[0][this.brand] = oc;
@@ -118,14 +184,3 @@ class GPU {
 
  
 module.exports = GPU;
-
-// const factory = (gpu_info) => {
-//     switch (gpu_info.brand) {
-//         case "amd": return new  
-//     }
-// }
-
-
-// export {
-//     factory
-// }
